@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lyster's Portfolio</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="starfield"></canvas>
     <div class="ellipse"></div>
+    <canvas id="starfield"></canvas>
+    <!-- navigation bar with logo -->
     <nav>
         <div class="logo-wrap">
             <div>
@@ -16,7 +18,7 @@
                     <div class="orbit-ring"></div>
                     <div class="pulse-ring"></div>
                     <div class="shine-sweep"></div>
-                    <a class="nav-logo" href="#me"><img class="logo-img" src="Icons/black_hole_logo.png" width="70px" height="40px"></a>
+                    <a class="nav-logo" href="#hero"><img class="logo-img" src="Icons/black_hole_logo.png" width="70px" height="40px"></a>
                 </button>
             </div>
         </div>    
@@ -31,6 +33,73 @@
             <li><a href="#contact">CONTACT</a></li>
         </ul>
     </nav>
+    <!-- Hero profile -->
+    <div id="hero">
+        <div class="hero-tag">3RD · Year · Computer Science</div>
+        <h1 class="hero-name">John Lyster T. Arbiol</h1>
+        <p class="hero-paragraph">Aspiring web developer focused on learning by building and improving with every project.</p>
+        <div class="hero-cta">
+            <a href="#resume" class="btn btn-resume">Resume</a>
+            <a href="#contact" class="btn btn-contact">Contact</a>
+        </div>
+    </div>
+
+    <!-- About me -->
+     <section id="about">
+        <div class="section-wrap">
+            <div class="section-label reveal"> Who I Am</div>
+            <h2 class="section-title reveal">About me</h2>
+            <div class="about-grid">
+                <div class="about-text reveal">
+                    <p>Hi there, I am John Lyster — a 3rd-year Computer Science student at CIT-U. With a genuine passion for building websites. I believe that growth comes from consistent practice, which is why I focus on learning by building and improving with every project.</p>
+                    <p>When I’m not studying or creating a project, I focus on building my body through working out. It helps me stay disciplined, consistent, and mentally sharp, and I bring these traits into my work as a aspiring developer.</p>
+                    <p>I’m driven by curiosity, disciplined through consistency, fueled by caffeine and excited by the endless possibilities the web has to offer.</p>
+                </div>
+                <div class="about-stats reveal">
+                    <div class="about-stats reveal">
+                        <div class="stat-card">
+                            <div class="stat-num">3rd</div>
+                            <div class="stat-desc">Year in CS at CIT-U</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-num">24/7</div>
+                            <div class="stat-desc">Learning & Improving</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-num">01</div>
+                            <div class="stat-desc">GOAL - Become a web developer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </section>
+        <div class="section-label reveal"> Who I Am</div>
+        <h2 class="section-title reveal">About me</h2>
+     <section id="projects">
+        <div class="section-wrap">
+            <div class="projects">
+                <div class="project-num">01/Project</div>
+                <div class="projTitle">CIT-U: Wildcats - Marketplace</div>
+                <p class="projDesc">A web-based platform for verified students to buy, sell, and share academic materials within a secure campus environment, featuring course-based categorization and built-in communication tools.</p>
+                <a target="_blank" href="https://github.com/Pakibabes/wildcats-marketplace.git" class="github-logo"><svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M56.7937 84.9688C44.4187 83.4688 35.7 74.5625 35.7 63.0313C35.7 58.3438 37.3875 53.2813 40.2 49.9063C38.9812 46.8125 39.1687 40.25 40.575 37.5313C44.325 37.0625 49.3875 39.0313 52.3875 41.75C55.95 40.625 59.7 40.0625 64.2937 40.0625C68.8875 40.0625 72.6375 40.625 76.0125 41.6563C78.9187 39.0313 84.075 37.0625 87.825 37.5313C89.1375 40.0625 89.325 46.625 88.1062 49.8125C91.1062 53.375 92.7 58.1563 92.7 63.0313C92.7 74.5625 83.9812 83.2813 71.4187 84.875C74.6062 86.9375 76.7625 91.4375 76.7625 96.5938L76.7625 106.344C76.7625 109.156 79.1062 110.75 81.9187 109.625C98.8875 103.156 112.2 86.1875 112.2 65.1875C112.2 38.6563 90.6375 17 64.1062 17C37.575 17 16.2 38.6562 16.2 65.1875C16.2 86 29.4187 103.25 47.2312 109.719C49.7625 110.656 52.2 108.969 52.2 106.438L52.2 98.9375C50.8875 99.5 49.2 99.875 47.7 99.875C41.5125 99.875 37.8562 96.5 35.2312 90.2188C34.2 87.6875 33.075 86.1875 30.9187 85.9063C29.7937 85.8125 29.4187 85.3438 29.4187 84.7813C29.4187 83.6563 31.2937 82.8125 33.1687 82.8125C35.8875 82.8125 38.2312 84.5 40.6687 87.9688C42.5437 90.6875 44.5125 91.9063 46.8562 91.9063C49.2 91.9063 50.7 91.0625 52.8562 88.9063C54.45 87.3125 55.6687 85.9063 56.7937 84.9688Z" fill="white"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="projects">
+                <div class="project-num">02/Project</div>
+                <div class="projTitle">Second Project</div>
+                <p class="projDesc">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus quidem incidunt libero voluptatum qui impedit a quam mollitia ad maiores molestias modi, ab accusamus iusto inventore eligendi sed neque perspiciatis.</p>
+                <a target="_blank" href="https://github.com/Pakibabes" class="github-logo">
+                    <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M56.7937 84.9688C44.4187 83.4688 35.7 74.5625 35.7 63.0313C35.7 58.3438 37.3875 53.2813 40.2 49.9063C38.9812 46.8125 39.1687 40.25 40.575 37.5313C44.325 37.0625 49.3875 39.0313 52.3875 41.75C55.95 40.625 59.7 40.0625 64.2937 40.0625C68.8875 40.0625 72.6375 40.625 76.0125 41.6563C78.9187 39.0313 84.075 37.0625 87.825 37.5313C89.1375 40.0625 89.325 46.625 88.1062 49.8125C91.1062 53.375 92.7 58.1563 92.7 63.0313C92.7 74.5625 83.9812 83.2813 71.4187 84.875C74.6062 86.9375 76.7625 91.4375 76.7625 96.5938L76.7625 106.344C76.7625 109.156 79.1062 110.75 81.9187 109.625C98.8875 103.156 112.2 86.1875 112.2 65.1875C112.2 38.6563 90.6375 17 64.1062 17C37.575 17 16.2 38.6562 16.2 65.1875C16.2 86 29.4187 103.25 47.2312 109.719C49.7625 110.656 52.2 108.969 52.2 106.438L52.2 98.9375C50.8875 99.5 49.2 99.875 47.7 99.875C41.5125 99.875 37.8562 96.5 35.2312 90.2188C34.2 87.6875 33.075 86.1875 30.9187 85.9063C29.7937 85.8125 29.4187 85.3438 29.4187 84.7813C29.4187 83.6563 31.2937 82.8125 33.1687 82.8125C35.8875 82.8125 38.2312 84.5 40.6687 87.9688C42.5437 90.6875 44.5125 91.9063 46.8562 91.9063C49.2 91.9063 50.7 91.0625 52.8562 88.9063C54.45 87.3125 55.6687 85.9063 56.7937 84.9688Z" fill="white"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+     </section>
+    
     <script src="scripts.js"></script>
 </body>
 </html>
