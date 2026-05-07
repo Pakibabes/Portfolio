@@ -1,1 +1,2 @@
 Hi there, I'm John Lyster and this is my portfolio website, where I showcase my skills,projects, and about me. This is just a basic website where I use HTML, CSS, and JavaScript and utilize AI tools to help me create much more better visuals. In this page I also added my resume and my contacts in case you want to work with me. Thank you and looking forward to work/meet with you. 
+Fueled by Passion and Coffee, and I like the theme GALAXY with Silver Surfer as my Icon.
