@@ -317,6 +317,77 @@ body{
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
+  .project-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+  .project-card{
+    background: var(--card-bg);
+    border: 0.5px solid var(--card-border);
+    border-radius: 4px;
+    padding: 1.8rem;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before{
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  }
+   .project-card:hover::before { opacity: 1; }
+     .project-card:hover {
+    border-color: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.06);
+    transform: translateY(-3px);
+  }
+  .project-num {
+    font-size: 0.7rem;
+    color: var(--dimmer);
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
+  }
+
+  .projTitle {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--white);
+  }
+
+  .projDesc {
+    font-size: 0.85rem;
+    color: var(--dim);
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .project-tags a {
+    margin-left: auto;
+  }
+  
+
+  .tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border: 0.5px solid var(--card-border);
+    border-radius: 2px;
+    color: var(--dim);
+  }
   @media(max-width: 640px){
   .hamburger {
     display: block;
@@ -352,3 +423,21 @@ body{
   }
   .about-grid { grid-template-columns: 1fr; }
 }
+
+/* ========== ANIMATIONS ========== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    .about-grid { grid-template-columns: 1fr; }
+  }
