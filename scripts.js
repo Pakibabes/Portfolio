@@ -146,3 +146,18 @@ hamburger.addEventListener("click", () => {
     console.log("Hamburger clicked!");
   navLinks.classList.toggle("active");
 });
+
+
+// ===== SCROLLED NAV =====
+const nav = document.querySelector('nav');
+const hero = document.getElementById('hero');
+
+window.addEventListener('scroll', () => {
+    const heroBottom = hero.offsetTop + hero.offsetHeight;
+
+    if (window.scrollY > heroBottom * 0.6) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+});
