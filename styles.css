@@ -468,6 +468,63 @@ body{
     text-decoration: underline;
     cursor: default;
   }
+
+  .contact-inner{
+    text-align: center;
+    padding: 4rem 0 6rem;
+  }
+  .contact-text{
+    font-family: 'Syne', sans-serif;
+    font-size: 4rem;
+    font-weight: 750;
+    line-height: 1.05;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    margin-bottom: 0;
+  }
+
+  .contact-desc{
+    color: var(--dim);
+    font-size: 1rem;
+    margin-bottom: 2.5rem; margin-top: 2.5rem;
+  }
+  .contact-me{
+    font-family: 'Space Mono', sans-serif;
+    font-size: 1.1rem;
+    color: var(--white);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+    letter-spacing: 0.1em;
+  }
+  .contactText{
+    font-size: 1.1rem;
+    font-family: 'Space Mono', sans-serif;
+    color: var(--white);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.1em;
+  }
+  .contact-me:hover{
+    border-bottom: 1px solid var(--white);
+  }
+  .profile-links{
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+  .profile-links a{
+    font-size: 0.90rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .Link:hover{
+    color: var(--white);
+  }
   @media(max-width: 640px){
   .hamburger {
     display: block;
@@ -503,6 +560,32 @@ body{
   }
   .about-grid { grid-template-columns: 1fr; }
 }
+footer{
+  font-family: 'Space Mono', sans-serif;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  text-align: center;
+  padding: 4rem;
+  color: white;
+  height: 120px;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  border-top: 0.5px solid var(--card-border);
+  background-color: var(--background);
+  opacity: 0.5;
+}
+.blackHole{
+  display: block;
+  width: 900px;
+  height: 500px;
+  margin: 0 auto; 
+  margin-top: -280px;
+  margin-bottom: -129px;
+  position: relative;
+  z-index: -1;                /* behind footer */
+  pointer-events: none;
+}
 
 /* ========== ANIMATIONS ========== */
   .reveal {
@@ -524,3 +607,4 @@ body{
     .nav-links { display: none; }
     .about-grid { grid-template-columns: 1fr; }
   }
+  
