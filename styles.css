@@ -319,7 +319,7 @@ body{
   }
   .project-grid{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
     gap: 1.2rem;
   }
   .project-card{
@@ -377,8 +377,29 @@ body{
   .project-tags a {
     margin-left: auto;
   }
-  
-
+  .github-logo{
+    display: infline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    margin-left: auto;
+  }
+  .github-logo svg{
+    transition: filter 0.3s ease, transform 0.3s ease;
+    filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+  }
+  .github-logo:hover svg{
+    filter:
+      drop-shadow(0, 0, 6px rgba(255, 255, 255, 0.95))
+      drop-shadow(0, 0, 14px rgba(255, 255, 255, 0.6))
+      drop-shadow(0, 0, 28px rgba(200, 220, 255, 0.35));
+    transform: scale(1.15);
+  }
+  .github-logo:hover svg path {
+    fill: white; /* soft purple */
+    transition: fill 0.3s ease;
+    filter: drop-shadow(0 0 8px rgba(123, 119, 134, 0.8));
+  }
   .tag {
     font-size: 0.7rem;
     letter-spacing: 0.08em;
@@ -387,6 +408,65 @@ body{
     border: 0.5px solid var(--card-border);
     border-radius: 2px;
     color: var(--dim);
+    text-decoration: none;
+  }
+  .tag:hover{
+    color: var(--white);
+    border-color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.07);
+  }
+
+  .skills-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .skill-group{
+    background: var(--card-bg);
+    border: 0.5px solid var(--card-border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    transition: border-color 0.3s;
+    border-color: rgba(255,255,255,0.25);
+  }
+  
+  .skill-group:hover{
+    cursor: pointer;
+    border-color: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.06);
+    transform: translateY(-3px);
+  }
+  .skill-group-title{
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dimmer);
+    margin-bottom: 1rem;
+  }
+  .skill-list{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .skill-list li {
+    font-size: 0.88rem;
+    color: var(--off-white);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .skill-list li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--dim);
+    flex-shrink: 0;
+  }
+  .skill-list li:hover{
+    text-decoration: underline;
+    cursor: default;
   }
   @media(max-width: 640px){
   .hamburger {
@@ -437,6 +517,9 @@ body{
   }
 
   @media (max-width: 640px) {
+    .project-grid{
+      grid-template-columns: 1fr;
+    }
     nav { padding: 1rem 1.25rem; }
     .nav-links { display: none; }
     .about-grid { grid-template-columns: 1fr; }
