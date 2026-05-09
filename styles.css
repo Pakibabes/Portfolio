@@ -606,4 +606,15 @@ footer{
     nav { padding: 1rem 1.25rem; }
     .nav-links { display: none; }
     .about-grid { grid-template-columns: 1fr; }
+    .blackHole{
+      display: block;
+      width: 485px;
+      height: 300px;
+      margin: 0 auto; 
+      margin-top: -280px;
+      margin-bottom: -129px;
+      position: relative;
+      z-index: -1;                /* behind footer */
+      pointer-events: none;
+    }
   }
