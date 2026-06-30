@@ -191,10 +191,9 @@ const TextType = ({
     hideCursorWhileTyping &&
     (currentCharIndex < textArray[currentTextIndex].length || isDeleting);
 
-  return createElement(
+  const content = createElement(
     Component,
     {
-      ref: containerRef,
       className: `text-type ${className}`,
       ...props,
     },
@@ -214,6 +213,14 @@ const TextType = ({
         {cursorCharacter}
       </span>
     ),
+  );
+
+  if (!startOnVisible) return content;
+
+  return (
+    <span ref={containerRef} style={{ display: "contents" }}>
+      {content}
+    </span>
   );
 };
 

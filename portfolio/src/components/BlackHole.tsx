@@ -1,7 +1,30 @@
-export default function BlackHole() {
+"use client";
+
+import dynamic from "next/dynamic";
+import { useSyncExternalStore, useState } from "react";
+
+const BlackHole3D = dynamic(() => import("./BlackHole3D"), {
+  ssr: false,
+  loading: () => (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="h-32 w-32 animate-pulse rounded-full bg-violet/10 blur-2xl" />
+    </div>
+  ),
+});
+
+function subscribeReducedMotion(onChange: () => void) {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
+function getReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function StaticBlackHole() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-      {/* outer glow */}
       <div
         className="bh-pulse absolute inset-0 rounded-full opacity-40 blur-3xl"
         style={{
@@ -9,8 +32,6 @@ export default function BlackHole() {
             "radial-gradient(circle, var(--violet) 0%, transparent 65%)",
         }}
       />
-
-      {/* accretion disk, rotating */}
       <div
         className="bh-spin absolute inset-[6%] rounded-full"
         style={{
@@ -24,29 +45,43 @@ export default function BlackHole() {
             "radial-gradient(circle, transparent 38%, black 42%, black 62%, transparent 64%)",
         }}
       />
+      <div className="absolute inset-[40%] rounded-full bg-void" />
+    </div>
+  );
+}
 
-      {/* secondary disk, counter-rotating for depth */}
-      <div
-        className="bh-spin-reverse absolute inset-[14%] rounded-full opacity-40"
-        style={{
-          background:
-            "conic-gradient(from 90deg, transparent 0deg, var(--violet) 60deg, transparent 140deg, var(--cyan) 240deg, transparent 320deg)",
-          filter: "blur(1.5px)",
-          maskImage:
-            "radial-gradient(circle, transparent 44%, black 48%, black 58%, transparent 60%)",
-          WebkitMaskImage:
-            "radial-gradient(circle, transparent 44%, black 48%, black 58%, transparent 60%)",
-        }}
-      />
+export default function BlackHole() {
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotion,
+    () => false,
+  );
+  const [hintVisible, setHintVisible] = useState(true);
 
-      {/* event horizon core */}
-      <div
-        className="absolute inset-[40%] rounded-full bg-void"
-        style={{
-          boxShadow:
-            "0 0 40px 12px rgba(7,6,12,0.9), inset 0 0 20px rgba(0,0,0,0.8)",
-        }}
-      />
+  const dismissHint = () => {
+    if (hintVisible) setHintVisible(false);
+  };
+
+  if (reducedMotion) {
+    return <StaticBlackHole />;
+  }
+
+  return (
+    <div
+      className="absolute inset-0 cursor-grab active:cursor-grabbing"
+      onPointerDown={dismissHint}
+      role="img"
+      aria-label="Interactive 3D black hole — drag to spin"
+    >
+      <BlackHole3D autoRotate={hintVisible} />
+
+      {hintVisible && (
+        <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2">
+          <span className="rounded-full border border-panel-line/60 bg-void/70 px-3 py-1.5 font-mono text-[10px] tracking-[0.2em] text-muted backdrop-blur-sm">
+            DRAG TO SPIN
+          </span>
+        </div>
+      )}
     </div>
   );
 }

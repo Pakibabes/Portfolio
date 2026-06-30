@@ -1,21 +1,25 @@
 import { profile } from "@/data/portfolio";
 import TextType from "@/components/TextType";
 import BlackHole from "@/components/BlackHole";
+import DevStatus from "@/components/DevStatus";
+import ScrollCue from "@/components/ScrollCue";
 
 export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen flex-col items-center justify-center gap-10 px-6 pl-20 pt-24 md:flex-row md:items-center md:justify-between md:gap-6 md:px-12 lg:px-20"
+      className="relative flex min-h-screen flex-col items-center justify-center gap-10 px-6 pt-24 md:flex-row md:items-center md:justify-between md:gap-6 md:px-12 lg:px-20"
     >
-      <div className="relative z-10 ml-20 flex max-w-2xl flex-col items-start gap-6 text-left">
+      <div className="relative z-10 flex max-w-2xl flex-col items-start gap-6 text-left md:ml-8 lg:ml-12">
+        <DevStatus />
+
         <span className="font-mono text-xs tracking-[0.3em] text-cyan">
           {profile.tagline.toUpperCase()}
         </span>
 
         <h1 className="font-display max-w-3xl text-5xl font-extrabold leading-[1.05] tracking-tight md:text-7xl">
           <span className="block text-2xl font-medium text-muted md:text-3xl">
-            Hi, I'm
+            Hi, I&apos;m
           </span>
           {profile.name.split(" ").slice(0, -1).join(" ")}{" "}
           <span className="text-cyan animate-glow">
@@ -38,22 +42,25 @@ export default function Hero() {
           <a
             href={profile.resumeHref}
             target="_blank"
-            className="rounded-full bg-text px-6 py-3 font-semibold text-void transition-transform hover:scale-105"
+            rel="noopener noreferrer"
+            className="cta-primary rounded-full bg-text px-6 py-3 font-semibold text-void transition-transform hover:scale-105"
           >
             Resume
           </a>
           <a
             href="#contact"
-            className="rounded-full border border-panel-line px-6 py-3 text-text transition-colors hover:border-cyan hover:text-cyan"
+            className="cta-secondary rounded-full border border-panel-line px-6 py-3 text-text transition-colors hover:border-cyan hover:text-cyan"
           >
             Contact
           </a>
         </div>
       </div>
 
-      <div className="relative -ml-30 h-[280px] w-full shrink-0 md:h-[460px] md:w-[460px] lg:h-[560px] lg:w-[560px]">
+      <div className="relative h-[320px] w-full shrink-0 sm:h-[380px] md:h-[460px] md:w-[460px] lg:h-[560px] lg:w-[560px]">
         <BlackHole />
       </div>
+
+      <ScrollCue />
     </section>
   );
 }

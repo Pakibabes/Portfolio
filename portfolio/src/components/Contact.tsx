@@ -1,12 +1,16 @@
 import Image from "next/image";
 import { profile } from "@/data/portfolio";
 import Reveal from "@/components/Reveal";
+import CopyEmailButton from "@/components/CopyEmailButton";
 
 export default function Contact() {
   return (
-    <section id="contact" className="relative overflow-hidden px-6 py-28 md:px-12">
+    <section
+      id="contact"
+      className="relative overflow-hidden px-6 py-28 md:px-12"
+    >
       <Image
-        src="/icons/blackhole-large.png"
+        src="/icons/blackhole-large.svg"
         alt=""
         aria-hidden="true"
         width={520}
@@ -28,11 +32,14 @@ export default function Contact() {
         </p>
         <a
           href={`mailto:${profile.email}`}
-          target="_blank"
-          className="text-gradient font-display mt-2 inline-block text-xl font-bold md:text-2xl"
+          className="text-gradient font-display mt-2 inline-block text-xl font-bold transition-opacity hover:opacity-80 md:text-2xl"
         >
           {profile.email}
         </a>
+
+        <div className="flex justify-center">
+          <CopyEmailButton />
+        </div>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-6 font-mono text-sm text-muted">
           {profile.socials.map((social) => (
@@ -40,6 +47,7 @@ export default function Contact() {
               key={social.label}
               href={social.href}
               target="_blank"
+              rel="noopener noreferrer"
               className="transition-colors hover:text-text"
             >
               {social.label}
