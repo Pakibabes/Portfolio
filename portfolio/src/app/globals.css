@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+:root {
+  --void: #07060c;
+  --panel: #0f0d1b;
+  --panel-line: rgba(236, 233, 246, 0.1);
+  --text: #ece9f6;
+  --muted: #8d89a8;
+  --violet: #8a7cff;
+  --cyan: #4fd6e0;
+  --grid-line: rgba(236, 233, 246, 0.035);
+}
+
+@theme inline {
+  --color-void: var(--void);
+  --color-panel: var(--panel);
+  --color-panel-line: var(--panel-line);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-violet: var(--violet);
+  --color-cyan: var(--cyan);
+  --font-display: "Syne", sans-serif;
+  --font-mono: "Space Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 56px 56px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 56px
+      56px,
+    var(--void);
+  color: var(--text);
+  font-family: "Space Mono", monospace;
+}
+
+@keyframes bh-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bh-spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes bh-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.bh-spin {
+  animation: bh-spin 14s linear infinite;
+}
+
+.bh-spin-reverse {
+  animation: bh-spin-reverse 20s linear infinite;
+}
+
+.bh-pulse {
+  animation: bh-pulse 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bh-spin,
+  .bh-spin-reverse,
+  .bh-pulse {
+    animation: none;
+  }
+}
+
+.skill-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.35s ease;
+}
+
+.skill-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: -1;
+  background: radial-gradient(
+    260px circle at 50% 0%,
+    rgba(138, 124, 255, 0.16),
+    transparent 70%
+  );
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.skill-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--violet), var(--cyan));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.skill-card:hover {
+  z-index: 1;
+}
+
+.skill-card:hover::before,
+.skill-card:hover::after {
+  opacity: 1;
+}
+
+.skill-card h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition:
+    color 0.3s ease,
+    letter-spacing 0.3s ease;
+}
+
+.skill-card:hover h3 {
+  letter-spacing: 0.06em;
+}
+
+.skill-dot {
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.skill-card:hover .skill-dot {
+  background-color: var(--cyan);
+  transform: scale(1.8);
+  box-shadow: 0 0 8px 1px rgba(79, 214, 224, 0.7);
+}
+
+.skill-card li {
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+}
+
+.skill-card:hover li {
+  transform: translateX(2px);
+}
+
+::selection {
+  background: var(--violet);
+  color: var(--void);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, var(--violet), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.animate-glow {
+  animation: name-pulse 4s ease-in-out infinite;
+}
+
+@keyframes name-pulse {
+  0%,
+  100% {
+    opacity: 0.92;
+    filter: brightness(1);
+  }
+
+  50% {
+    opacity: 1;
+    filter: brightness(1.08);
+  }
+}
