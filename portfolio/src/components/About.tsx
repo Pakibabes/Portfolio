@@ -46,7 +46,7 @@ export default function About() {
             {stats.map((stat) => (
               <div
                 key={stat.desc}
-                className="rounded-2xl border border-panel-line bg-panel p-6"
+                className="stat-card rounded-2xl border border-panel-line bg-panel p-6"
               >
                 <div className="font-display text-3xl font-bold text-gradient">
                   {stat.num}

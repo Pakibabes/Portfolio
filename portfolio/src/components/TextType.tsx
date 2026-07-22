@@ -191,11 +191,10 @@ const TextType = ({
     hideCursorWhileTyping &&
     (currentCharIndex < textArray[currentTextIndex].length || isDeleting);
 
-  return createElement(
+  const content = createElement(
     Component,
     // eslint-disable-next-line react-hooks/refs -- containerRef.current is only read in effects above, never during render
     {
-      ref: containerRef,
       className: `text-type ${className}`,
       ...props,
     },
@@ -215,6 +214,14 @@ const TextType = ({
         {cursorCharacter}
       </span>
     ),
+  );
+
+  if (!startOnVisible) return content;
+
+  return (
+    <span ref={containerRef} style={{ display: "contents" }}>
+      {content}
+    </span>
   );
 };
 

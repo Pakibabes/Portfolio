@@ -20,13 +20,36 @@ export default function Starfield() {
     if (!ctx) return;
 
     const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     let stars: Star[] = [];
     let width = 0;
     let height = 0;
     let raf = 0;
+
+    const drawStatic = () => {
+      ctx.clearRect(0, 0, width, height);
+      for (const star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(236, 233, 246, 0.5)";
+        ctx.fill();
+      }
+    };
+
+    const drawAnimated = () => {
+      ctx.clearRect(0, 0, width, height);
+      for (const star of stars) {
+        star.twinkle += star.speed;
+        const alpha = 0.4 + Math.sin(star.twinkle) * 0.35;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(236, 233, 246, ${Math.max(0.15, alpha)})`;
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(drawAnimated);
+    };
 
     const resize = () => {
       width = window.innerWidth;
@@ -43,35 +66,13 @@ export default function Starfield() {
       }));
     };
 
-    const draw = () => {
-      ctx.clearRect(0, 0, width, height);
-      for (const star of stars) {
-        star.twinkle += star.speed;
-        const alpha = 0.4 + Math.sin(star.twinkle) * 0.35;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(236, 233, 246, ${Math.max(0.15, alpha)})`;
-        ctx.fill();
-      }
-      raf = requestAnimationFrame(draw);
-    };
-
     resize();
     window.addEventListener("resize", resize);
 
     if (prefersReducedMotion) {
-      draw();
-      cancelAnimationFrame(raf);
-      // draw a single static frame
-      ctx.clearRect(0, 0, width, height);
-      for (const star of stars) {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(236, 233, 246, 0.5)";
-        ctx.fill();
-      }
+      drawStatic();
     } else {
-      raf = requestAnimationFrame(draw);
+      raf = requestAnimationFrame(drawAnimated);
     }
 
     return () => {
