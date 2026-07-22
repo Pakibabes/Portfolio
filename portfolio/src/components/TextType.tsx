@@ -193,6 +193,7 @@ const TextType = ({
 
   return createElement(
     Component,
+    // eslint-disable-next-line react-hooks/refs -- containerRef.current is only read in effects above, never during render
     {
       ref: containerRef,
       className: `text-type ${className}`,

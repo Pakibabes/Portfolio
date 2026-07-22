@@ -15,7 +15,7 @@ export default function Hero() {
 
         <h1 className="font-display max-w-3xl text-5xl font-extrabold leading-[1.05] tracking-tight md:text-7xl">
           <span className="block text-2xl font-medium text-muted md:text-3xl">
-            Hi, I'm
+            Hi, I&apos;m
           </span>
           {profile.name.split(" ").slice(0, -1).join(" ")}{" "}
           <span className="text-cyan animate-glow">
