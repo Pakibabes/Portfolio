@@ -79,36 +79,22 @@ function AccretionDisk() {
   );
 }
 
-function InnerDisk() {
+function Halo() {
   const ref = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
     if (ref.current) {
-      ref.current.rotation.z = clock.getElapsedTime() * 0.4;
+      ref.current.rotation.z = clock.getElapsedTime() * 0.25;
     }
   });
 
   return (
-    <mesh ref={ref} rotation={[Math.PI / 2.4, 0, 0]}>
-      <torusGeometry args={[1.65, 0.06, 16, 100]} />
+    <mesh ref={ref} rotation={[Math.PI / 2.05, 0, 0]}>
+      <torusGeometry args={[1.5, 0.05, 16, 100]} />
       <meshBasicMaterial
-        color="#4fd6e0"
+        color="#ffcf7a"
         transparent
-        opacity={0.7}
-        blending={THREE.AdditiveBlending}
-      />
-    </mesh>
-  );
-}
-
-function PhotonRing() {
-  return (
-    <mesh rotation={[Math.PI / 2, 0, 0]}>
-      <torusGeometry args={[1.28, 0.025, 16, 128]} />
-      <meshBasicMaterial
-        color="#ece9f6"
-        transparent
-        opacity={0.55}
+        opacity={0.6}
         blending={THREE.AdditiveBlending}
       />
     </mesh>
@@ -125,9 +111,9 @@ function EventHorizon() {
       <mesh>
         <sphereGeometry args={[1.18, 64, 64]} />
         <meshBasicMaterial
-          color="#8a7cff"
+          color="#d9660b"
           transparent
-          opacity={0.12}
+          opacity={0.1}
           side={THREE.BackSide}
           blending={THREE.AdditiveBlending}
         />
@@ -141,9 +127,9 @@ function Glow() {
     <mesh rotation={[Math.PI / 2, 0, 0]}>
       <planeGeometry args={[8, 8]} />
       <meshBasicMaterial
-        color="#8a7cff"
+        color="#f5b84f"
         transparent
-        opacity={0.08}
+        opacity={0.06}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
@@ -155,14 +141,13 @@ function BlackHoleModel({ autoRotate }: { autoRotate: boolean }) {
   return (
     <>
       <ambientLight intensity={0.15} />
-      <pointLight position={[4, 3, 4]} intensity={0.6} color="#8a7cff" />
-      <pointLight position={[-3, -2, 2]} intensity={0.4} color="#4fd6e0" />
+      <pointLight position={[4, 3, 4]} intensity={0.6} color="#ffcf7a" />
+      <pointLight position={[-3, -2, 2]} intensity={0.4} color="#d9660b" />
 
       <group>
         <Glow />
         <EventHorizon />
-        <PhotonRing />
-        <InnerDisk />
+        <Halo />
         <AccretionDisk />
       </group>
 
