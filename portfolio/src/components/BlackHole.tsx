@@ -29,14 +29,14 @@ function StaticBlackHole() {
         className="bh-pulse absolute inset-0 rounded-full opacity-40 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, var(--violet) 0%, transparent 65%)",
+            "radial-gradient(circle, var(--gold) 0%, transparent 65%)",
         }}
       />
       <div
         className="bh-spin absolute inset-[6%] rounded-full"
         style={{
           background:
-            "conic-gradient(from 0deg, var(--cyan) 0deg, transparent 40deg, var(--violet) 120deg, transparent 200deg, var(--cyan) 280deg, transparent 340deg, var(--cyan) 360deg)",
+            "conic-gradient(from 0deg, var(--gold) 0deg, transparent 40deg, var(--ember) 120deg, transparent 200deg, var(--gold) 280deg, transparent 340deg, var(--gold) 360deg)",
           filter: "blur(2px)",
           opacity: 0.55,
           maskImage:
