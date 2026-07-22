@@ -8,6 +8,8 @@
   --muted: #8d89a8;
   --violet: #8a7cff;
   --cyan: #4fd6e0;
+  --gold: #ffcf7a;
+  --ember: #d9660b;
   --grid-line: rgba(236, 233, 246, 0.035);
 }
 
@@ -19,6 +21,8 @@
   --color-muted: var(--muted);
   --color-violet: var(--violet);
   --color-cyan: var(--cyan);
+  --color-gold: var(--gold);
+  --color-ember: var(--ember);
   --font-display: "Syne", sans-serif;
   --font-mono: "Space Mono", monospace;
 }
