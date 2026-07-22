@@ -89,7 +89,7 @@ function Halo() {
   });
 
   return (
-    <mesh ref={ref} rotation={[Math.PI / 2.05, 0, 0]}>
+    <mesh ref={ref} rotation={[0.3, 0, 0]}>
       <torusGeometry args={[1.5, 0.05, 16, 100]} />
       <meshBasicMaterial
         color="#ffcf7a"
