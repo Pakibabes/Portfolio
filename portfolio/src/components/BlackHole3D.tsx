@@ -26,13 +26,14 @@ const DISK_FRAGMENT = /* glsl */ `
     float spiral = sin(angle * 10.0 + uTime * 1.8 - dist * 5.0) * 0.5 + 0.5;
     float pulse = sin(uTime * 0.6 + dist * 3.0) * 0.15 + 0.85;
 
-    vec3 violet = vec3(0.541, 0.486, 1.0);
-    vec3 cyan   = vec3(0.310, 0.839, 0.878);
-    vec3 hot    = vec3(1.0, 0.85, 0.6);
+    vec3 white = vec3(1.0, 0.973, 0.925);
+    vec3 gold  = vec3(1.0, 0.812, 0.478);
+    vec3 ember = vec3(0.851, 0.4, 0.043);
 
-    vec3 color = mix(violet, cyan, spiral);
-    color = mix(color, hot, pow(spiral, 3.0) * 0.35);
-    color *= 1.6 * pulse;
+    float band = smoothstep(1.45, 2.85, dist);
+    vec3 color = mix(white, gold, band);
+    color = mix(color, ember, pow(band, 1.5));
+    color *= 1.3 * pulse * (0.8 + spiral * 0.35);
 
     float inner = smoothstep(1.35, 1.55, dist);
     float outer = 1.0 - smoothstep(2.6, 3.0, dist);
@@ -63,7 +64,7 @@ function AccretionDisk() {
   });
 
   return (
-    <mesh geometry={geometry} rotation={[0.35, 0, 0]}>
+    <mesh geometry={geometry} rotation={[0.12, 0, 0]}>
       <shaderMaterial
         ref={matRef}
         uniforms={uniforms}
