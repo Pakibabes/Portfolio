@@ -1,155 +1,124 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import type { GLTF } from "three-stdlib";
 
-const DISK_VERTEX = /* glsl */ `
-  varying vec2 vUv;
-  varying vec3 vPos;
-  void main() {
-    vUv = uv;
-    vPos = position;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-`;
+type BlackHoleGLTF = GLTF & {
+  nodes: {
+    Object_4: THREE.Mesh;
+    Object_5: THREE.Mesh;
+    Object_7: THREE.Mesh;
+    Object_9: THREE.Mesh;
+  };
+  materials: {
+    main: THREE.MeshBasicMaterial;
+    ring: THREE.MeshBasicMaterial;
+    hole: THREE.MeshBasicMaterial;
+    distortion: THREE.MeshBasicMaterial;
+  };
+};
 
-const DISK_FRAGMENT = /* glsl */ `
-  uniform float uTime;
-  varying vec2 vUv;
-  varying vec3 vPos;
+function BlackHoleModel() {
+  const { nodes, materials } = useGLTF(
+    "/models/black_hole.glb"
+  ) as unknown as BlackHoleGLTF;
 
-  void main() {
-    float dist = length(vPos.xz);
-    float angle = atan(vPos.z, vPos.x);
-    float spiral = sin(angle * 10.0 + uTime * 1.8 - dist * 5.0) * 0.5 + 0.5;
-    float pulse = sin(uTime * 0.6 + dist * 3.0) * 0.15 + 0.85;
+  const holeTexture = useTexture("/textures/hole4.png");
 
-    vec3 white = vec3(1.0, 0.973, 0.925);
-    vec3 gold  = vec3(1.0, 0.812, 0.478);
-    vec3 ember = vec3(0.851, 0.4, 0.043);
+  const ringRef = useRef<THREE.Mesh>(null);
+  const distortionRef = useRef<THREE.Mesh>(null);
+  const auraRef = useRef<THREE.Mesh>(null);
 
-    float band = smoothstep(1.45, 2.85, dist);
-    vec3 color = mix(white, gold, band);
-    color = mix(color, ember, pow(band, 1.5));
-    color *= 1.3 * pulse * (0.8 + spiral * 0.35);
+  // Clone materials and configure hole4.png with soft additive glow
+  const cloned = useMemo(() => {
+    const ring = materials.ring.clone();
+    ring.map = holeTexture;
+    ring.transparent = true;
+    ring.alphaTest = 0; // Remove mask cutoff so the full outer rim and delicate glow render
+    ring.side = THREE.DoubleSide;
+    ring.depthWrite = false;
+    ring.blending = THREE.AdditiveBlending;
 
-    float inner = smoothstep(1.35, 1.55, dist);
-    float outer = 1.0 - smoothstep(2.6, 3.0, dist);
-    float alpha = inner * outer;
+    const main = materials.main.clone();
+    main.transparent = true;
+    main.depthWrite = false;
+    main.blending = THREE.AdditiveBlending;
 
-    gl_FragColor = vec4(color, alpha * 0.92);
-  }
-`;
+    const distortion = materials.distortion.clone();
+    distortion.transparent = true;
+    distortion.depthWrite = false;
 
-function AccretionDisk() {
-  const matRef = useRef<THREE.ShaderMaterial>(null);
+    const hole = materials.hole.clone();
+    hole.color = new THREE.Color("#000000");
 
-  const geometry = useMemo(() => {
-    const geo = new THREE.RingGeometry(1.45, 2.85, 128, 8);
-    geo.rotateX(-Math.PI / 2);
-    return geo;
-  }, []);
+    return { ring, main, distortion, hole };
+  }, [materials, holeTexture]);
 
-  const uniforms = useMemo(
-    () => ({ uTime: { value: 0 } }),
-    [],
-  );
-
-  useFrame(({ clock }) => {
-    if (matRef.current) {
-      matRef.current.uniforms.uTime.value = clock.getElapsedTime();
+  // Dynamic animation: accretion disk spins continuously, distortion counter-rotates
+  useFrame((_, delta) => {
+    if (ringRef.current) {
+      ringRef.current.rotation.y += delta * 0.45;
+    }
+    if (distortionRef.current) {
+      distortionRef.current.rotation.y -= delta * 0.18;
+    }
+    if (auraRef.current) {
+      auraRef.current.rotation.y += delta * 0.08;
     }
   });
 
   return (
-    <mesh geometry={geometry} rotation={[0.12, 0, 0]}>
-      <shaderMaterial
-        ref={matRef}
-        uniforms={uniforms}
-        vertexShader={DISK_VERTEX}
-        fragmentShader={DISK_FRAGMENT}
-        transparent
-        side={THREE.DoubleSide}
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
+    <group scale={0.138} rotation={[0.22, 0, -0.05]}>
+      {/* Outer atmospheric aura */}
+      <mesh
+        ref={auraRef}
+        geometry={nodes.Object_4.geometry}
+        material={cloned.main}
       />
-    </mesh>
-  );
-}
 
-function Halo() {
-  const ref = useRef<THREE.Mesh>(null);
-
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      ref.current.rotation.z = clock.getElapsedTime() * 0.25;
-    }
-  });
-
-  return (
-    <mesh ref={ref} rotation={[0.3, 0, 0]}>
-      <torusGeometry args={[1.5, 0.05, 16, 100]} />
-      <meshBasicMaterial
-        color="#ffcf7a"
-        transparent
-        opacity={0.6}
-        blending={THREE.AdditiveBlending}
+      {/* Dynamic Accretion Disk (full high-res textured ring) */}
+      <mesh
+        ref={ringRef}
+        geometry={nodes.Object_5.geometry}
+        material={cloned.ring}
       />
-    </mesh>
-  );
-}
 
-function EventHorizon() {
-  return (
-    <group>
-      <mesh>
-        <sphereGeometry args={[1.15, 64, 64]} />
-        <meshBasicMaterial color="#07060c" />
-      </mesh>
-      <mesh>
-        <sphereGeometry args={[1.18, 64, 64]} />
-        <meshBasicMaterial
-          color="#d9660b"
-          transparent
-          opacity={0.1}
-          side={THREE.BackSide}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
+      {/* Central Event Horizon (pure black void) */}
+      <mesh geometry={nodes.Object_7.geometry} material={cloned.hole} />
+
+      {/* Gravitational Distortion Sphere */}
+      <mesh
+        ref={distortionRef}
+        geometry={nodes.Object_9.geometry}
+        material={cloned.distortion}
+        scale={9.521}
+      />
     </group>
   );
 }
 
-function Glow() {
+function LoadingFallback() {
   return (
-    <mesh rotation={[Math.PI / 2, 0, 0]}>
-      <planeGeometry args={[8, 8]} />
-      <meshBasicMaterial
-        color="#f5b84f"
-        transparent
-        opacity={0.06}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-      />
+    <mesh>
+      <sphereGeometry args={[1.2, 32, 32]} />
+      <meshBasicMaterial color="#07060c" />
     </mesh>
   );
 }
 
-function BlackHoleModel({ autoRotate }: { autoRotate: boolean }) {
+function Scene({ autoRotate }: { autoRotate: boolean }) {
   return (
     <>
-      <ambientLight intensity={0.15} />
-      <pointLight position={[4, 3, 4]} intensity={0.6} color="#ffcf7a" />
-      <pointLight position={[-3, -2, 2]} intensity={0.4} color="#d9660b" />
+      <ambientLight intensity={0.4} />
+      <pointLight position={[5, 4, 5]} intensity={1.2} color="#ffcf7a" />
+      <pointLight position={[-4, -3, -2]} intensity={0.6} color="#d9660b" />
 
-      <group>
-        <Glow />
-        <EventHorizon />
-        <Halo />
-        <AccretionDisk />
-      </group>
+      <Suspense fallback={<LoadingFallback />}>
+        <BlackHoleModel />
+      </Suspense>
 
       <OrbitControls
         enablePan={false}
@@ -173,12 +142,15 @@ export default function BlackHole3D({
 }) {
   return (
     <Canvas
-      camera={{ position: [0, 1.8, 5.5], fov: 42 }}
+      camera={{ position: [0, 1.4, 6.8], fov: 42 }}
       gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
       dpr={[1, 2]}
       style={{ background: "transparent", touchAction: "pan-y" }}
     >
-      <BlackHoleModel autoRotate={autoRotate} />
+      <Scene autoRotate={autoRotate} />
     </Canvas>
   );
 }
+
+useGLTF.preload("/models/black_hole.glb");
+useTexture.preload("/textures/hole4.png");
