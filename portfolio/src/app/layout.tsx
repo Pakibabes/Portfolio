@@ -55,6 +55,8 @@ export default function RootLayout({
               try {
                 if (sessionStorage.getItem('singularity_breached') === 'true') {
                   document.documentElement.classList.add('intro-breached');
+                }
+                if (sessionStorage.getItem('hero_elements_entered') === 'true') {
                   document.documentElement.classList.add('hero-elements-entered');
                 }
               } catch (e) {}

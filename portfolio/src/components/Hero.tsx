@@ -34,7 +34,7 @@ function getElementsSnapshot() {
   try {
     return (
       document.documentElement.classList.contains("hero-elements-entered") ||
-      sessionStorage.getItem("singularity_breached") === "true"
+      sessionStorage.getItem("hero_elements_entered") === "true"
     );
   } catch {
     return false;
@@ -58,17 +58,51 @@ export default function Hero() {
     getServerSnapshot,
   );
 
-  // Fallback watchdog: If intro was breached but elements haven't entered after 1.5s, trigger them
+  // 3-5s solo Black Hole timer + double-click / double-tap to enter immediately
   useEffect(() => {
-    if (introBreached && !elementsEntered) {
-      const timer = setTimeout(() => {
-        try {
-          document.documentElement.classList.add("hero-elements-entered");
-          window.dispatchEvent(new CustomEvent("singularity:elements-enter"));
-        } catch {}
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
+    if (!introBreached || elementsEntered) return;
+
+    const triggerEnter = () => {
+      try {
+        sessionStorage.setItem("hero_elements_entered", "true");
+        document.documentElement.classList.add("hero-elements-entered");
+        window.dispatchEvent(new CustomEvent("singularity:elements-enter"));
+      } catch {}
+    };
+
+    // Auto-slide in after 4.0 seconds (within 3-5 seconds range)
+    const timer = setTimeout(triggerEnter, 4000);
+
+    // Double-click or double-tap to fast-forward into the portfolio
+    let lastTapTime = 0;
+    const handlePointerDown = () => {
+      const now = Date.now();
+      if (now - lastTapTime < 450) {
+        triggerEnter();
+      }
+      lastTapTime = now;
+    };
+
+    const handleDblClick = () => {
+      triggerEnter();
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+        triggerEnter();
+      }
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("dblclick", handleDblClick);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("dblclick", handleDblClick);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [introBreached, elementsEntered]);
 
   return (
@@ -144,6 +178,19 @@ export default function Hero() {
       >
         <BlackHole />
       </div>
+
+      {/* Solo Black Hole phase indicator (Fades out when elements slide in) */}
+      {introBreached && !elementsEntered && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 rounded-full border border-white/10 bg-void/80 px-4 py-1.5 font-mono text-[10px] tracking-[0.2em] text-muted backdrop-blur-md animate-pulse"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-cyan" />
+          <span>DOUBLE-CLICK TO ENTER</span>
+          <span className="text-white/20">•</span>
+          <span className="text-[9px] text-muted/60">SPACE / ENTER</span>
+        </div>
+      )}
 
       <div
         className={`hidden md:flex transition-opacity duration-700 ease-out ${

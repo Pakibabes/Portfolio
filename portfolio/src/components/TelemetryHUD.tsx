@@ -16,7 +16,7 @@ function getHUDSnapshot() {
   try {
     return (
       document.documentElement.classList.contains("hero-elements-entered") ||
-      sessionStorage.getItem("singularity_breached") === "true"
+      sessionStorage.getItem("hero_elements_entered") === "true"
     );
   } catch {
     return false;
