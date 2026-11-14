@@ -59,6 +59,11 @@ export default function SingularityIntro() {
       } catch {
         // sessionStorage unavailable
       }
+      try {
+        window.dispatchEvent(new CustomEvent("singularity:breached"));
+      } catch {
+        // CustomEvent unavailable
+      }
       setBreachedLocally(true);
       document.body.style.overflow = "";
     }, 900);

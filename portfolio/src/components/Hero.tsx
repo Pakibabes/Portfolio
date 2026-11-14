@@ -1,3 +1,6 @@
+"use client";
+
+import { useSyncExternalStore } from "react";
 import { profile } from "@/data/portfolio";
 import TextType from "@/components/TextType";
 import BlackHole from "@/components/BlackHole";
@@ -5,7 +8,37 @@ import DevStatus from "@/components/DevStatus";
 import ScrollCue from "@/components/ScrollCue";
 import MagneticButton from "@/components/MagneticButton";
 
+function subscribeIntro(callback: () => void) {
+  window.addEventListener("singularity:breached", callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener("singularity:breached", callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function getIntroSnapshot() {
+  try {
+    return (
+      document.documentElement.classList.contains("intro-breached") ||
+      sessionStorage.getItem("singularity_breached") === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
 export default function Hero() {
+  const introBreached = useSyncExternalStore(
+    subscribeIntro,
+    getIntroSnapshot,
+    getServerSnapshot,
+  );
+
   return (
     <section
       id="hero"
@@ -32,12 +65,13 @@ export default function Hero() {
         <TextType
           as="p"
           text={[profile.bio]}
-          className="w-full max-w-2xl lg:max-w-3xl text-sm sm:text-base md:text-lg leading-relaxed text-muted"
-          typingSpeed={45}
+          className="w-full max-w-2xl lg:max-w-3xl min-h-[4.5rem] sm:min-h-[5rem] md:min-h-[5.5rem] text-sm sm:text-base md:text-lg leading-relaxed text-muted"
+          typingSpeed={38}
           pauseDuration={2200}
           showCursor
           cursorCharacter="_"
           loop={false}
+          start={introBreached}
         />
 
         <div className="flex w-full sm:w-auto items-center gap-3 sm:gap-4 pt-2 font-mono text-xs sm:text-sm">
