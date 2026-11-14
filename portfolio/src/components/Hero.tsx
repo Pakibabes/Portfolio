@@ -8,9 +8,9 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen flex-col items-center justify-center gap-10 px-6 pt-24 md:flex-row md:items-center md:justify-between md:gap-6 md:px-12 lg:px-20"
+      className="relative flex min-h-screen flex-col items-center justify-center gap-8 px-6 pt-24 md:flex-row md:items-center md:justify-between md:gap-4 md:px-8 lg:pl-12 lg:pr-16 xl:pl-16 xl:pr-24"
     >
-      <div className="relative z-10 flex max-w-2xl flex-col items-start gap-6 text-left md:ml-8 lg:ml-12">
+      <div className="relative z-10 flex max-w-xl lg:max-w-2xl flex-col items-start gap-6 text-left md:ml-6 lg:ml-8">
         <DevStatus />
 
         <span className="font-mono text-xs tracking-[0.3em] text-cyan">
@@ -56,7 +56,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative h-[320px] w-full shrink-0 sm:h-[380px] md:h-[460px] md:w-[460px] lg:h-[560px] lg:w-[560px]">
+      <div className="relative h-[380px] w-full shrink-0 sm:h-[460px] md:h-[540px] md:w-[580px] lg:h-[660px] lg:w-[740px] xl:h-[740px] xl:w-[840px] 2xl:h-[800px] 2xl:w-[940px] md:mr-2 lg:mr-6 xl:mr-10">
         <BlackHole />
       </div>
 
