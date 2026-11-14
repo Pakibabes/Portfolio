@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, useEffect } from "react";
 import { profile } from "@/data/portfolio";
 import TextType from "@/components/TextType";
 import BlackHole from "@/components/BlackHole";
@@ -10,9 +10,11 @@ import MagneticButton from "@/components/MagneticButton";
 
 function subscribeIntro(callback: () => void) {
   window.addEventListener("singularity:breached", callback);
+  window.addEventListener("singularity:elements-enter", callback);
   window.addEventListener("storage", callback);
   return () => {
     window.removeEventListener("singularity:breached", callback);
+    window.removeEventListener("singularity:elements-enter", callback);
     window.removeEventListener("storage", callback);
   };
 }
@@ -21,6 +23,17 @@ function getIntroSnapshot() {
   try {
     return (
       document.documentElement.classList.contains("intro-breached") ||
+      sessionStorage.getItem("singularity_breached") === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getElementsSnapshot() {
+  try {
+    return (
+      document.documentElement.classList.contains("hero-elements-entered") ||
       sessionStorage.getItem("singularity_breached") === "true"
     );
   } catch {
@@ -39,13 +52,38 @@ export default function Hero() {
     getServerSnapshot,
   );
 
+  const elementsEntered = useSyncExternalStore(
+    subscribeIntro,
+    getElementsSnapshot,
+    getServerSnapshot,
+  );
+
+  // Fallback watchdog: If intro was breached but elements haven't entered after 1.5s, trigger them
+  useEffect(() => {
+    if (introBreached && !elementsEntered) {
+      const timer = setTimeout(() => {
+        try {
+          document.documentElement.classList.add("hero-elements-entered");
+          window.dispatchEvent(new CustomEvent("singularity:elements-enter"));
+        } catch {}
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [introBreached, elementsEntered]);
+
   return (
     <section
       id="hero"
       className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center gap-10 px-4 pt-20 pb-16 sm:px-6 sm:pt-24 sm:pb-20 md:flex-row md:items-center md:justify-between md:gap-8 md:px-8 md:py-0 lg:px-12 xl:px-16 2xl:px-20 max-w-[1600px] mx-auto"
     >
-      {/* Left Column: Expansive Hero Content Card */}
-      <div className="relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0">
+      {/* Left Column: Expansive Hero Content Card (Slides in smoothly 1.3s after the Black Hole appears) */}
+      <div
+        className={`relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0 transition-all duration-800 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          elementsEntered
+            ? "opacity-100 translate-x-0 pointer-events-auto"
+            : "opacity-0 -translate-x-12 pointer-events-none"
+        }`}
+      >
         <DevStatus />
 
         <span className="font-mono text-[11px] sm:text-xs tracking-[0.2em] sm:tracking-[0.3em] text-cyan">
@@ -71,7 +109,7 @@ export default function Hero() {
           showCursor
           cursorCharacter="_"
           loop={false}
-          start={introBreached}
+          start={elementsEntered}
         />
 
         <div className="flex w-full sm:w-auto items-center gap-3 sm:gap-4 pt-2 font-mono text-xs sm:text-sm">
@@ -96,12 +134,22 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Right Column: 3D Black Hole at the Right Side */}
-      <div className="relative shrink-0 flex items-center justify-center h-[340px] w-full sm:h-[420px] md:h-[500px] md:w-[460px] lg:h-[580px] lg:w-[540px] xl:h-[660px] xl:w-[620px] 2xl:h-[720px] 2xl:w-[680px]">
+      {/* Right Column: 3D Black Hole at the Right Side (Revealed FIRST upon singularity breach) */}
+      <div
+        className={`relative shrink-0 flex items-center justify-center h-[340px] w-full sm:h-[420px] md:h-[500px] md:w-[460px] lg:h-[580px] lg:w-[540px] xl:h-[660px] xl:w-[620px] 2xl:h-[720px] 2xl:w-[680px] transition-all duration-1000 ease-out ${
+          introBreached
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-90"
+        }`}
+      >
         <BlackHole />
       </div>
 
-      <div className="hidden md:flex">
+      <div
+        className={`hidden md:flex transition-opacity duration-700 ease-out ${
+          elementsEntered ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
         <ScrollCue />
       </div>
     </section>

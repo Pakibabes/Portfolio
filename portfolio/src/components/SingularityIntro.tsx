@@ -66,6 +66,16 @@ export default function SingularityIntro() {
       }
       setBreachedLocally(true);
       document.body.style.overflow = "";
+
+      // 1.3s later: Black Hole has stood alone in space, now slide in the other UI elements
+      setTimeout(() => {
+        try {
+          document.documentElement.classList.add("hero-elements-entered");
+          window.dispatchEvent(new CustomEvent("singularity:elements-enter"));
+        } catch {
+          // CustomEvent unavailable
+        }
+      }, 1300);
     }, 900);
   }, [breaching, breachedLocally, alreadyBreached]);
 

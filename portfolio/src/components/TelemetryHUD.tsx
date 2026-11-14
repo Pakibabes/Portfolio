@@ -1,9 +1,38 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { profile } from "@/data/portfolio";
 
+function subscribeHUD(callback: () => void) {
+  window.addEventListener("singularity:elements-enter", callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener("singularity:elements-enter", callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function getHUDSnapshot() {
+  try {
+    return (
+      document.documentElement.classList.contains("hero-elements-entered") ||
+      sessionStorage.getItem("singularity_breached") === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
 export default function TelemetryHUD() {
+  const elementsEntered = useSyncExternalStore(
+    subscribeHUD,
+    getHUDSnapshot,
+    getServerSnapshot,
+  );
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -18,7 +47,13 @@ export default function TelemetryHUD() {
   return (
     <>
       {/* Floating HUD Trigger */}
-      <div className="fixed bottom-5 right-5 z-40 hidden sm:block">
+      <div
+        className={`fixed bottom-5 right-5 z-40 hidden sm:block transition-all duration-700 ease-out ${
+          elementsEntered
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+      >
         <button
           type="button"
           onClick={() => setIsOpen(true)}

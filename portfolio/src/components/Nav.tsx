@@ -1,12 +1,41 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { navLinks, profile } from "@/data/portfolio";
 
 const sectionIds = ["hero", ...navLinks.map((l) => l.href.slice(1))];
 
+function subscribeNav(callback: () => void) {
+  window.addEventListener("singularity:elements-enter", callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener("singularity:elements-enter", callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function getNavSnapshot() {
+  try {
+    return (
+      document.documentElement.classList.contains("hero-elements-entered") ||
+      sessionStorage.getItem("singularity_breached") === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
 export default function Nav() {
+  const elementsEntered = useSyncExternalStore(
+    subscribeNav,
+    getNavSnapshot,
+    getServerSnapshot,
+  );
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("hero");
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
@@ -64,8 +93,8 @@ export default function Nav() {
       {/* ================================================================= */}
       <header
         aria-label="Top Navigation"
-        className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-panel-line bg-void/80 px-4 py-3 backdrop-blur-md transition-all duration-300 ease-out sm:px-6 sm:py-4 md:px-12 ${
-          scrolledPastHero
+        className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-panel-line bg-void/80 px-4 py-3 backdrop-blur-md transition-all duration-700 ease-out sm:px-6 sm:py-4 md:px-12 ${
+          !elementsEntered || scrolledPastHero
             ? "-translate-y-full opacity-0 pointer-events-none"
             : "translate-y-0 opacity-100 pointer-events-auto"
         }`}
