@@ -28,6 +28,18 @@ export default function Starfield() {
     let height = 0;
     let raf = 0;
 
+    // Relativistic velocity warp tracking
+    let scrollVelocity = 0;
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      scrollVelocity = (currentY - lastScrollY) * 0.35;
+      lastScrollY = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
     const drawStatic = () => {
       ctx.clearRect(0, 0, width, height);
       for (const star of stars) {
@@ -40,13 +52,32 @@ export default function Starfield() {
 
     const drawAnimated = () => {
       ctx.clearRect(0, 0, width, height);
+
+      // Smooth decay of scroll velocity
+      scrollVelocity *= 0.9;
+      const warp = Math.max(-20, Math.min(20, scrollVelocity));
+      const isWarping = Math.abs(warp) > 0.4;
+
       for (const star of stars) {
         star.twinkle += star.speed;
-        const alpha = 0.4 + Math.sin(star.twinkle) * 0.35;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(236, 233, 246, ${Math.max(0.15, alpha)})`;
-        ctx.fill();
+        const alpha = 0.35 + Math.sin(star.twinkle) * 0.35;
+
+        if (isWarping) {
+          // Relativistic warp speed streak
+          ctx.beginPath();
+          ctx.lineWidth = star.r * 1.4;
+          ctx.strokeStyle = `rgba(79, 214, 224, ${Math.max(0.12, alpha * 0.85)})`;
+          ctx.lineCap = "round";
+          ctx.moveTo(star.x, star.y);
+          ctx.lineTo(star.x, star.y - warp * star.r * 3);
+          ctx.stroke();
+        } else {
+          // Normal celestial twinkle
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(236, 233, 246, ${Math.max(0.15, alpha)})`;
+          ctx.fill();
+        }
       }
       raf = requestAnimationFrame(drawAnimated);
     };
@@ -76,6 +107,7 @@ export default function Starfield() {
     }
 
     return () => {
+      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(raf);
     };

@@ -7,17 +7,27 @@ export default function Footer() {
     );
   };
 
+  const replayIntro = () => {
+    try {
+      sessionStorage.removeItem("singularity_breached");
+      document.documentElement.classList.remove("intro-breached");
+    } catch {
+      // sessionStorage unavailable
+    }
+    window.location.reload();
+  };
+
   return (
     <footer className="border-t border-panel-line px-4 py-8 text-center font-mono text-xs text-muted sm:px-6 md:px-12">
       <p className="leading-relaxed">
         © {new Date().getFullYear()} John Lyster T. Arbiol — Built with passion
         &amp; caffeine ✦
       </p>
-      <div className="mt-3">
+      <div className="mt-3 flex items-center justify-center gap-2">
         <button
           type="button"
           onClick={triggerCommandPalette}
-          className="inline-flex items-center gap-1.5 rounded-full border border-panel-line/70 bg-panel/50 px-3 py-1 text-[10px] tracking-wider text-muted transition-colors hover:border-cyan/50 hover:text-cyan active:bg-panel"
+          className="inline-flex items-center gap-1.5 rounded-full border border-panel-line/70 bg-panel/50 px-3 py-1 text-[10px] tracking-wider text-muted transition-colors hover:border-cyan/50 hover:text-cyan active:bg-panel cursor-pointer"
           aria-label="Open command palette"
         >
           <span className="hidden sm:inline">Press</span>
@@ -29,6 +39,16 @@ export default function Footer() {
             K
           </kbd>
           <span>to navigate</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={replayIntro}
+          className="inline-flex items-center gap-1.5 rounded-full border border-panel-line/70 bg-panel/50 px-3 py-1 text-[10px] tracking-wider text-muted transition-colors hover:border-violet/50 hover:text-violet active:bg-panel cursor-pointer"
+          aria-label="Replay cinematic singularity intro"
+        >
+          <span className="text-violet">✦</span>
+          <span>Replay Intro</span>
         </button>
       </div>
     </footer>

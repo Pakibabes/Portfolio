@@ -6,7 +6,7 @@ export default function DevStatus() {
         <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
       </span>
       <span className="text-muted">
-        Open to <span className="text-cyan">internships</span> &amp; collabs
+        Open to <span className="text-cyan">internships </span> &amp; collabs
       </span>
     </div>
   );

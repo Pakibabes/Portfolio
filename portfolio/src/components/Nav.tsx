@@ -9,6 +9,7 @@ const sectionIds = ["hero", ...navLinks.map((l) => l.href.slice(1))];
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("hero");
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -27,9 +28,20 @@ export default function Nav() {
       observers.push(observer);
     });
 
-    return () => observers.forEach((o) => o.disconnect());
+    const handleScroll = () => {
+      setScrolledPastHero(window.scrollY > 340);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      observers.forEach((o) => o.disconnect());
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
+  // Close menus on Escape key
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -46,125 +58,38 @@ export default function Nav() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 backdrop-blur-md bg-void/80 border-b border-panel-line sm:px-6 sm:py-4 md:px-12">
-      <a
-        href="#hero"
-        className="group relative flex h-10 w-10 items-center justify-center sm:h-11 sm:w-11"
-        aria-label="Home"
+    <>
+      {/* ================================================================= */}
+      {/* 1. FULL TOP NAVBAR (Visible in Hero section at top of page)       */}
+      {/* ================================================================= */}
+      <header
+        aria-label="Top Navigation"
+        className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-panel-line bg-void/80 px-4 py-3 backdrop-blur-md transition-all duration-300 ease-out sm:px-6 sm:py-4 md:px-12 ${
+          scrolledPastHero
+            ? "-translate-y-full opacity-0 pointer-events-none"
+            : "translate-y-0 opacity-100 pointer-events-auto"
+        }`}
       >
-        <span className="absolute inset-0 rounded-full border border-violet/40 transition-transform duration-700 group-hover:rotate-180" />
-        <Image
-          src="/icons/black_hole_logo.svg"
-          alt="Home"
-          width={26}
-          height={26}
-          className="relative z-10 rounded-full sm:h-7 sm:w-7"
-        />
-      </a>
-
-      {/* Mobile controls */}
-      <div className="flex items-center gap-2 md:hidden">
-        <button
-          type="button"
-          onClick={triggerCommandPalette}
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-panel-line text-muted transition-colors hover:border-cyan/50 hover:text-cyan active:bg-panel"
-          aria-label="Open command palette"
-        >
-          <svg
-            width="17"
-            height="17"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
+        <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
+          {/* Logo */}
+          <a
+            href="#hero"
+            className="group relative flex h-9 w-9 items-center justify-center sm:h-10 sm:w-10"
+            aria-label="Back to top"
           >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
-        </button>
+            <span className="absolute inset-0 rounded-full border border-violet/40 transition-transform duration-700 group-hover:rotate-180" />
+            <Image
+              src="/icons/logo.png"
+              alt="John Lyster Logo"
+              width={26}
+              height={26}
+              priority
+              className="relative z-10 rounded-full object-contain sm:h-7 sm:w-7"
+            />
+          </a>
 
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-panel-line text-text transition-colors hover:border-cyan/50 hover:text-cyan active:bg-panel"
-          onClick={() => setOpen((o) => !o)}
-        >
-          {open ? (
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          ) : (
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <line x1="4" y1="12" x2="20" y2="12" />
-              <line x1="4" y1="6" x2="20" y2="6" />
-              <line x1="4" y1="18" x2="20" y2="18" />
-            </svg>
-          )}
-        </button>
-      </div>
-
-      {/* Desktop menu */}
-      <ul className="hidden items-center gap-8 font-mono text-xs tracking-[0.2em] text-muted md:flex">
-        {navLinks.map((link) => {
-          const id = link.href.slice(1);
-          const isActive = active === id;
-          return (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className={`relative transition-colors hover:text-cyan ${
-                  isActive ? "text-cyan" : ""
-                }`}
-              >
-                {link.label.toUpperCase()}
-                {isActive && (
-                  <span className="absolute -bottom-1 left-0 h-px w-full bg-gradient-to-r from-violet to-cyan" />
-                )}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-
-      {/* Desktop Command Palette trigger */}
-      <button
-        type="button"
-        onClick={triggerCommandPalette}
-        className="hidden items-center gap-2 rounded-lg border border-panel-line px-3 py-1.5 font-mono text-[10px] tracking-wider text-muted transition-colors hover:border-cyan/50 hover:text-cyan md:flex"
-        aria-label="Open command palette"
-      >
-        <span>⌘K</span>
-      </button>
-
-      {/* Mobile dropdown menu */}
-      {open && (
-        <div className="absolute top-full left-0 right-0 border-b border-panel-line bg-void/98 backdrop-blur-xl px-4 py-4 shadow-2xl md:hidden">
-          <ul className="flex flex-col gap-1 font-mono text-xs">
+          {/* Full Desktop Navigation Links */}
+          <ul className="hidden items-center gap-8 font-mono text-xs tracking-[0.2em] text-muted md:flex">
             {navLinks.map((link) => {
               const id = link.href.slice(1);
               const isActive = active === id;
@@ -172,18 +97,13 @@ export default function Nav() {
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className={`flex items-center justify-between rounded-lg px-3 py-3 transition-colors ${
-                      isActive
-                        ? "bg-panel text-cyan"
-                        : "text-muted hover:bg-panel/60 hover:text-text"
+                    className={`relative transition-colors hover:text-cyan ${
+                      isActive ? "text-cyan font-semibold" : ""
                     }`}
-                    onClick={() => setOpen(false)}
                   >
-                    <span className="tracking-[0.15em]">
-                      {link.label.toUpperCase()}
-                    </span>
+                    {link.label.toUpperCase()}
                     {isActive && (
-                      <span className="h-1.5 w-1.5 rounded-full bg-cyan shadow-[0_0_8px_rgba(79,214,224,0.8)]" />
+                      <span className="absolute -bottom-1 left-0 h-px w-full bg-gradient-to-r from-violet to-cyan" />
                     )}
                   </a>
                 </li>
@@ -191,32 +111,253 @@ export default function Nav() {
             })}
           </ul>
 
-          <div className="mt-3 flex items-center gap-2 pt-3 border-t border-panel-line font-mono text-xs">
+          {/* Right Header Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={triggerCommandPalette}
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-panel-line text-muted transition-colors hover:border-cyan/50 hover:text-cyan sm:rounded-full sm:px-3 sm:py-1 sm:h-auto sm:w-auto font-mono text-xs"
+              aria-label="Open command palette"
+            >
+              <span className="hidden sm:inline">⌘K</span>
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="sm:hidden"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </button>
+
+            {/* Mobile-only toggle when at the top */}
+            <button
+              type="button"
+              aria-label="Toggle menu"
+              aria-expanded={open}
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-panel-line text-text transition-colors hover:border-cyan/50 hover:text-cyan md:hidden"
+              onClick={() => setOpen((o) => !o)}
+            >
+              {open ? (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
+                </svg>
+              )}
+            </button>
+
+            {/* Resume CTA */}
             <a
               href={profile.resumeHref}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="flex-1 rounded-lg border border-panel-line bg-panel py-2.5 text-center font-medium text-text transition-colors hover:border-cyan hover:text-cyan"
+              className="hidden rounded-full border border-panel-line px-4 py-1.5 font-mono text-xs text-text transition-colors hover:border-cyan hover:text-cyan md:inline-flex"
             >
               Resume ↗
             </a>
-            <button
-              type="button"
-              onClick={() => {
-                setOpen(false);
-                triggerCommandPalette();
-              }}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-panel-line bg-panel py-2.5 text-center text-muted transition-colors hover:border-cyan hover:text-cyan"
-            >
-              <span>Search</span>
-              <kbd className="rounded border border-panel-line px-1 text-[10px]">
-                ⌘K
-              </kbd>
-            </button>
           </div>
         </div>
-      )}
-    </nav>
+
+        {/* Mobile Dropdown Menu when at top */}
+        {open && !scrolledPastHero && (
+          <div className="absolute top-full left-0 right-0 border-b border-panel-line bg-void/95 p-4 backdrop-blur-2xl md:hidden">
+            <ul className="flex flex-col gap-1 font-mono text-xs">
+              {navLinks.map((link) => {
+                const id = link.href.slice(1);
+                const isActive = active === id;
+                return (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className={`flex items-center justify-between rounded-xl px-4 py-3 transition-colors ${
+                        isActive
+                          ? "bg-panel text-cyan border border-cyan/20"
+                          : "text-muted hover:bg-panel/60 hover:text-text"
+                      }`}
+                      onClick={() => setOpen(false)}
+                    >
+                      <span className="tracking-[0.15em] font-medium">
+                        {link.label.toUpperCase()}
+                      </span>
+                      {isActive && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-cyan shadow-[0_0_8px_rgba(79,214,224,0.8)]" />
+                      )}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </header>
+
+      {/* ================================================================= */}
+      {/* 2. FLOATING DYNAMIC ISLAND CAPSULE DOCK (When scrolled past Hero) */}
+      {/* ================================================================= */}
+      <div
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          scrolledPastHero
+            ? "translate-y-0 opacity-100 scale-100 pointer-events-auto"
+            : "-translate-y-16 opacity-0 scale-95 pointer-events-none"
+        }`}
+      >
+        <nav
+          aria-label="Floating Navigation Dock"
+          className="relative flex items-center gap-2.5 rounded-full border border-panel-line/80 bg-void/90 px-3.5 py-1.5 backdrop-blur-xl shadow-2xl shadow-cyan/5"
+        >
+          {/* Logo link back to Hero */}
+          <a
+            href="#hero"
+            className="group relative flex h-7 w-7 items-center justify-center shrink-0"
+            aria-label="Scroll back to top"
+          >
+            <span className="absolute inset-0 rounded-full border border-violet/30 transition-transform duration-700 group-hover:rotate-180" />
+            <Image
+              src="/icons/logo.png"
+              alt="Logo"
+              width={20}
+              height={20}
+              className="relative z-10 rounded-full object-contain"
+            />
+          </a>
+
+          {/* Divider */}
+          <span className="h-4 w-px bg-panel-line/60" aria-hidden="true" />
+
+          {/* Active Section Indicator Pill */}
+          <div className="flex items-center gap-1.5 font-mono text-[11px] text-cyan px-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan animate-pulse" />
+            <span className="uppercase tracking-widest font-semibold max-w-[100px] truncate sm:max-w-none">
+              {active}
+            </span>
+          </div>
+
+          {/* Divider */}
+          <span className="h-4 w-px bg-panel-line/60" aria-hidden="true" />
+
+          {/* Hamburger Menu Trigger Button */}
+          <button
+            type="button"
+            onClick={() => setOpen((prev) => !prev)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={open}
+            className={`flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium transition-all ${
+              open
+                ? "bg-cyan/15 text-cyan border border-cyan/40"
+                : "border border-panel-line bg-panel/70 text-text hover:border-cyan/50 hover:text-cyan"
+            }`}
+          >
+            <span className="text-[11px]">{open ? "✕" : "☰"}</span>
+            <span className="tracking-wider">{open ? "CLOSE" : "MENU"}</span>
+          </button>
+
+          {/* Search trigger in floating dock */}
+          <button
+            type="button"
+            onClick={triggerCommandPalette}
+            aria-label="Open command palette"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-panel-line text-muted transition-colors hover:border-cyan/50 hover:text-cyan"
+          >
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </button>
+
+          {/* Floating Dropdown Menu (Under the Island Dock) */}
+          {open && (
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 rounded-2xl border border-panel-line bg-void/95 p-3 backdrop-blur-2xl shadow-2xl shadow-cyan/10">
+              <ul className="flex flex-col gap-1 font-mono text-xs">
+                {navLinks.map((link) => {
+                  const id = link.href.slice(1);
+                  const isActive = active === id;
+                  return (
+                    <li key={link.href}>
+                      <a
+                        href={link.href}
+                        className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 transition-colors ${
+                          isActive
+                            ? "bg-panel text-cyan border border-cyan/25 font-semibold"
+                            : "text-muted hover:bg-panel/60 hover:text-text"
+                        }`}
+                        onClick={() => setOpen(false)}
+                      >
+                        <span className="tracking-[0.15em]">
+                          {link.label.toUpperCase()}
+                        </span>
+                        {isActive && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-cyan shadow-[0_0_8px_rgba(79,214,224,0.8)]" />
+                        )}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="mt-2.5 flex items-center gap-2 pt-2.5 border-t border-panel-line font-mono text-xs">
+                <a
+                  href={profile.resumeHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="flex-1 rounded-lg border border-panel-line bg-panel py-2 text-center font-medium text-text transition-colors hover:border-cyan hover:text-cyan"
+                >
+                  Resume ↗
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    triggerCommandPalette();
+                  }}
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-panel-line bg-panel py-2 text-center text-muted transition-colors hover:border-cyan hover:text-cyan"
+                >
+                  <span>Search</span>
+                  <kbd className="rounded border border-panel-line px-1 text-[9px]">
+                    ⌘K
+                  </kbd>
+                </button>
+              </div>
+            </div>
+          )}
+        </nav>
+      </div>
+    </>
   );
 }

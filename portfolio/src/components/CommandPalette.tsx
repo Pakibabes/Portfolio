@@ -30,6 +30,12 @@ const commands = [
     action: "copy-email" as const,
     group: "Actions",
   },
+  {
+    id: "replay-intro",
+    label: "Replay Cinematic Intro",
+    action: "replay-intro" as const,
+    group: "Actions",
+  },
 ];
 
 export default function CommandPalette() {
@@ -55,6 +61,14 @@ export default function CommandPalette() {
         navigator.clipboard.writeText(profile.email);
         setCopied(true);
         setTimeout(close, 800);
+        return;
+      }
+      if ("action" in cmd && cmd.action === "replay-intro") {
+        try {
+          sessionStorage.removeItem("singularity_breached");
+          document.documentElement.classList.remove("intro-breached");
+        } catch {}
+        window.location.reload();
         return;
       }
       if ("href" in cmd && cmd.href) {
