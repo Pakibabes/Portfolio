@@ -10,17 +10,17 @@ export default function ProjectCard({
 }) {
   return (
     <Reveal delay={delay}>
-      <article className="project-card group relative flex h-full flex-col gap-4 rounded-2xl border border-panel-line bg-panel p-6 md:p-8">
+      <article className="project-card group relative flex h-full flex-col gap-4 rounded-xl sm:rounded-2xl border border-panel-line bg-panel p-5 sm:p-6 md:p-8">
         <div
-          className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          className="pointer-events-none absolute inset-0 rounded-xl sm:rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           style={{
             background:
               "radial-gradient(400px circle at 50% 0%, rgba(138,124,255,0.08), transparent 70%)",
           }}
         />
 
-        <div className="relative flex items-start justify-between">
-          <span className="font-mono text-xs tracking-[0.2em] text-cyan">
+        <div className="relative flex items-start justify-between gap-2">
+          <span className="font-mono text-[11px] sm:text-xs tracking-[0.2em] text-cyan">
             {project.number}/PROJECT
           </span>
           <a
@@ -28,7 +28,7 @@ export default function ProjectCard({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${project.title} on GitHub`}
-            className="text-muted transition-all hover:scale-110 hover:text-text"
+            className="p-1 -m-1 text-muted transition-all hover:scale-110 hover:text-text active:scale-95"
           >
             <svg
               width="22"
@@ -45,11 +45,11 @@ export default function ProjectCard({
           </a>
         </div>
 
-        <h3 className="relative font-display text-xl font-bold transition-colors group-hover:text-cyan md:text-2xl">
+        <h3 className="relative font-display text-lg sm:text-xl md:text-2xl font-bold transition-colors group-hover:text-cyan break-words">
           {project.title}
         </h3>
 
-        <p className="relative flex-1 text-sm leading-relaxed text-muted">
+        <p className="relative flex-1 text-xs sm:text-sm leading-relaxed text-muted">
           {project.description}
         </p>
 
@@ -61,14 +61,14 @@ export default function ProjectCard({
                 href={tag.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-panel-line px-3 py-1 font-mono text-xs text-muted transition-colors hover:border-cyan hover:text-cyan"
+                className="rounded-full border border-panel-line px-2.5 py-1 font-mono text-[11px] sm:text-xs text-muted transition-colors hover:border-cyan hover:text-cyan"
               >
                 {tag.label}
               </a>
             ) : (
               <span
                 key={tag.label}
-                className="rounded-full border border-panel-line px-3 py-1 font-mono text-xs text-muted"
+                className="rounded-full border border-panel-line px-2.5 py-1 font-mono text-[11px] sm:text-xs text-muted"
               >
                 {tag.label}
               </span>

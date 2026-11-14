@@ -76,8 +76,8 @@ export default function BlackHole() {
       <BlackHole3D autoRotate={hintVisible} />
 
       {hintVisible && (
-        <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2">
-          <span className="rounded-full border border-panel-line/60 bg-void/70 px-3 py-1.5 font-mono text-[10px] tracking-[0.2em] text-muted backdrop-blur-sm">
+        <div className="pointer-events-none absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap">
+          <span className="rounded-full border border-panel-line/60 bg-void/80 px-2.5 py-1 font-mono text-[9px] sm:text-[10px] tracking-[0.2em] text-muted backdrop-blur-sm">
             DRAG TO SPIN
           </span>
         </div>

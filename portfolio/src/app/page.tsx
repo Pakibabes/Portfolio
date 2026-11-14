@@ -17,7 +17,7 @@ export default function Home() {
       <CommandPalette />
       <Starfield />
       <Nav />
-      <main id="main-content">
+      <main id="main-content" className="overflow-x-hidden">
         <Hero />
         <TechMarquee />
         <About />

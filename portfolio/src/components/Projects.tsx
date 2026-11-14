@@ -4,7 +4,7 @@ import SectionHeading from "@/components/SectionHeading";
 
 export default function Projects() {
   return (
-    <section id="projects" className="px-6 py-28 md:px-12">
+    <section id="projects" className="px-4 py-16 sm:px-6 sm:py-20 md:px-12 md:py-28">
       <div className="mx-auto max-w-6xl">
         <SectionHeading label="What I've built" title="Projects" />
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

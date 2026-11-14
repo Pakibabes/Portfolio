@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@fontsource/syne/400.css";
 import "@fontsource/syne/600.css";
 import "@fontsource/syne/700.css";
@@ -6,6 +6,13 @@ import "@fontsource/syne/800.css";
 import "@fontsource/space-mono/400.css";
 import "@fontsource/space-mono/700.css";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#07060c",
+};
 
 export const metadata: Metadata = {
   title: "John Lyster T. Arbiol — Portfolio",
@@ -40,7 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-void text-text">
+      <body className="min-h-full flex flex-col bg-void text-text overflow-x-hidden">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:rounded-lg focus:bg-panel focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:text-cyan"

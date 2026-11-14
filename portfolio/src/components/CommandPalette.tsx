@@ -104,22 +104,31 @@ export default function CommandPalette() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, filtered, activeIndex, execute]);
 
+  useEffect(() => {
+    if (!open) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [open]);
+
   if (!open) return null;
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-start justify-center bg-void/70 px-4 pt-[15vh] backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-start justify-center bg-void/80 px-3 pt-12 sm:px-4 sm:pt-[15vh] backdrop-blur-sm"
       onClick={close}
       role="dialog"
       aria-modal="true"
       aria-label="Command palette"
     >
       <div
-        className="w-full max-w-lg overflow-hidden rounded-2xl border border-panel-line bg-panel shadow-2xl shadow-violet/10"
+        className="w-full max-w-lg overflow-hidden rounded-xl sm:rounded-2xl border border-panel-line bg-panel shadow-2xl shadow-violet/10"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 border-b border-panel-line px-4 py-3">
-          <span className="font-mono text-xs text-cyan">⌘K</span>
+        <div className="flex items-center gap-2 sm:gap-3 border-b border-panel-line px-3.5 py-3 sm:px-4">
+          <span className="font-mono text-xs text-cyan shrink-0">⌘K</span>
           <input
             autoFocus
             type="text"
@@ -129,16 +138,24 @@ export default function CommandPalette() {
               setActiveIndex(0);
             }}
             placeholder="Jump to a section or action…"
-            className="flex-1 bg-transparent font-mono text-sm text-text outline-none placeholder:text-muted"
+            className="flex-1 bg-transparent font-mono text-base sm:text-sm text-text outline-none placeholder:text-muted"
           />
           {copied && (
-            <span className="font-mono text-xs text-cyan">Copied!</span>
+            <span className="font-mono text-xs text-cyan shrink-0">Copied!</span>
           )}
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Close command palette"
+            className="flex h-7 w-7 items-center justify-center rounded text-muted hover:text-text sm:hidden"
+          >
+            ✕
+          </button>
         </div>
 
-        <ul className="max-h-64 overflow-y-auto py-2">
+        <ul className="max-h-[50vh] sm:max-h-64 overflow-y-auto py-2">
           {filtered.length === 0 ? (
-            <li className="px-4 py-3 font-mono text-sm text-muted">
+            <li className="px-4 py-3 font-mono text-xs sm:text-sm text-muted">
               No results
             </li>
           ) : (
@@ -147,14 +164,16 @@ export default function CommandPalette() {
                 <button
                   type="button"
                   onClick={() => execute(cmd)}
-                  className={`flex w-full items-center justify-between px-4 py-2.5 font-mono text-sm transition-colors ${
+                  className={`flex w-full items-center justify-between px-3.5 sm:px-4 py-3 sm:py-2.5 font-mono text-xs sm:text-sm transition-colors text-left ${
                     i === activeIndex
                       ? "bg-violet/10 text-cyan"
-                      : "text-text hover:bg-panel-line/50"
+                      : "text-text hover:bg-panel-line/50 active:bg-panel-line"
                   }`}
                 >
-                  <span>{cmd.label}</span>
-                  <span className="text-xs text-muted">{cmd.group}</span>
+                  <span className="truncate pr-2">{cmd.label}</span>
+                  <span className="text-[10px] sm:text-xs text-muted shrink-0">
+                    {cmd.group}
+                  </span>
                 </button>
               </li>
             ))

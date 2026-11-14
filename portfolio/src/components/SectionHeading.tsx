@@ -8,11 +8,11 @@ export default function SectionHeading({
   title: string;
 }) {
   return (
-    <Reveal className="mb-12">
-      <span className="font-mono text-xs tracking-[0.3em] text-cyan">
+    <Reveal className="mb-8 md:mb-12">
+      <span className="font-mono text-[11px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] text-cyan">
         {label.toUpperCase()}
       </span>
-      <h2 className="font-display mt-3 text-4xl font-bold tracking-tight md:text-5xl">
+      <h2 className="font-display mt-2 sm:mt-3 text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
         {title}
       </h2>
     </Reveal>

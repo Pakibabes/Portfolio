@@ -20,7 +20,7 @@ export default function CopyEmailButton() {
     <button
       type="button"
       onClick={copy}
-      className="mt-4 inline-flex items-center gap-2 rounded-full border border-panel-line px-5 py-2.5 font-mono text-xs tracking-wider text-muted transition-all hover:border-cyan hover:text-cyan"
+      className="mt-4 inline-flex items-center gap-2 rounded-full border border-panel-line px-5 py-2.5 font-mono text-xs tracking-wider text-muted transition-all hover:border-cyan hover:text-cyan active:scale-95 active:bg-panel"
     >
       {copied ? (
         <>

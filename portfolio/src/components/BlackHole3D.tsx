@@ -176,7 +176,7 @@ export default function BlackHole3D({
       camera={{ position: [0, 1.8, 5.5], fov: 42 }}
       gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
       dpr={[1, 2]}
-      style={{ background: "transparent", touchAction: "none" }}
+      style={{ background: "transparent", touchAction: "pan-y" }}
     >
       <BlackHoleModel autoRotate={autoRotate} />
     </Canvas>

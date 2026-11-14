@@ -8,21 +8,21 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen flex-col items-center justify-center gap-10 px-6 pt-24 md:flex-row md:items-center md:justify-between md:gap-6 md:px-12 lg:px-20"
+      className="relative flex min-h-[100dvh] flex-col items-center justify-center gap-8 px-4 pt-20 pb-16 sm:px-6 sm:pt-24 sm:pb-20 md:flex-row md:items-center md:justify-between md:gap-6 md:px-12 md:py-0 lg:px-20"
     >
-      <div className="relative z-10 flex max-w-2xl flex-col items-start gap-6 text-left md:ml-8 lg:ml-12">
+      <div className="relative z-10 flex max-w-2xl flex-col items-start gap-5 sm:gap-6 text-left md:ml-8 lg:ml-12">
         <DevStatus />
 
-        <span className="font-mono text-xs tracking-[0.3em] text-cyan">
+        <span className="font-mono text-[11px] sm:text-xs tracking-[0.2em] sm:tracking-[0.3em] text-cyan">
           {profile.tagline.toUpperCase()}
         </span>
 
-        <h1 className="font-display max-w-3xl text-5xl font-extrabold leading-[1.05] tracking-tight md:text-7xl">
-          <span className="block text-2xl font-medium text-muted md:text-3xl">
+        <h1 className="font-display max-w-3xl text-3xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight">
+          <span className="block text-lg sm:text-2xl font-medium text-muted md:text-3xl mb-1">
             Hi, I&apos;m
           </span>
-          {profile.name.split(" ").slice(0, -1).join(" ")}{" "}
-          <span className="text-cyan animate-glow">
+          <span>{profile.name.split(" ").slice(0, -1).join(" ")} </span>
+          <span className="text-cyan animate-glow inline-block">
             {profile.name.split(" ").slice(-1)}
           </span>
         </h1>
@@ -30,7 +30,7 @@ export default function Hero() {
         <TextType
           as="p"
           text={[profile.bio]}
-          className="max-w-xl text-base text-muted md:text-lg"
+          className="max-w-xl text-sm sm:text-base md:text-lg leading-relaxed text-muted"
           typingSpeed={45}
           pauseDuration={2200}
           showCursor
@@ -38,29 +38,31 @@ export default function Hero() {
           loop={false}
         />
 
-        <div className="flex flex-wrap gap-4 pt-2 font-mono text-sm">
+        <div className="flex w-full sm:w-auto items-center gap-3 sm:gap-4 pt-2 font-mono text-xs sm:text-sm">
           <a
             href={profile.resumeHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="cta-primary rounded-full bg-text px-6 py-3 font-semibold text-void transition-transform hover:scale-105"
+            className="cta-primary flex-1 sm:flex-initial text-center rounded-full bg-text px-5 py-3 sm:px-6 font-semibold text-void transition-transform hover:scale-105 active:scale-95"
           >
             Resume
           </a>
           <a
             href="#contact"
-            className="cta-secondary rounded-full border border-panel-line px-6 py-3 text-text transition-colors hover:border-cyan hover:text-cyan"
+            className="cta-secondary flex-1 sm:flex-initial text-center rounded-full border border-panel-line px-5 py-3 sm:px-6 text-text transition-colors hover:border-cyan hover:text-cyan active:bg-panel"
           >
             Contact
           </a>
         </div>
       </div>
 
-      <div className="relative h-[320px] w-full shrink-0 sm:h-[380px] md:h-[460px] md:w-[460px] lg:h-[560px] lg:w-[560px]">
+      <div className="relative h-[260px] w-full max-w-[320px] shrink-0 sm:h-[360px] sm:max-w-none md:h-[460px] md:w-[460px] lg:h-[560px] lg:w-[560px]">
         <BlackHole />
       </div>
 
-      <ScrollCue />
+      <div className="hidden md:flex">
+        <ScrollCue />
+      </div>
     </section>
   );
 }
