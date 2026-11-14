@@ -70,8 +70,8 @@ export default function Hero() {
       } catch {}
     };
 
-    // Auto-slide in after 4.0 seconds (within 3-5 seconds range)
-    const timer = setTimeout(triggerEnter, 4000);
+    // Auto-slide in after 2.5 seconds (within 2-3 seconds range)
+    const timer = setTimeout(triggerEnter, 2500);
 
     // Double-click or double-tap to fast-forward into the portfolio
     let lastTapTime = 0;
@@ -110,9 +110,9 @@ export default function Hero() {
       id="hero"
       className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center gap-10 px-4 pt-20 pb-16 sm:px-6 sm:pt-24 sm:pb-20 md:flex-row md:items-center md:justify-between md:gap-8 md:px-8 md:py-0 lg:px-12 xl:px-16 2xl:px-20 max-w-[1600px] mx-auto"
     >
-      {/* Left Column: Expansive Hero Content Card (Slides in smoothly 1.3s after the Black Hole appears) */}
+      {/* Left Column: Expansive Hero Content Card (Slides in smoothly 2.5s after the Black Hole appears) */}
       <div
-        className={`relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0 transition-all duration-800 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0 transition-all duration-[1300ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
           elementsEntered
             ? "opacity-100 translate-x-0 pointer-events-auto"
             : "opacity-0 -translate-x-12 pointer-events-none"

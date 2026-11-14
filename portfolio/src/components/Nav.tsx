@@ -93,7 +93,7 @@ export default function Nav() {
       {/* ================================================================= */}
       <header
         aria-label="Top Navigation"
-        className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-panel-line bg-void/80 px-4 py-3 backdrop-blur-md transition-all duration-700 ease-out sm:px-6 sm:py-4 md:px-12 ${
+        className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-panel-line bg-void/80 px-4 py-3 backdrop-blur-md transition-all duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] sm:px-6 sm:py-4 md:px-12 ${
           !elementsEntered || scrolledPastHero
             ? "-translate-y-full opacity-0 pointer-events-none"
             : "translate-y-0 opacity-100 pointer-events-auto"

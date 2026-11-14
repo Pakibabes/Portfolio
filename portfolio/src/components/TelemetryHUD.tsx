@@ -48,7 +48,7 @@ export default function TelemetryHUD() {
     <>
       {/* Floating HUD Trigger */}
       <div
-        className={`fixed bottom-5 right-5 z-40 hidden sm:block transition-all duration-700 ease-out ${
+        className={`fixed bottom-5 right-5 z-40 hidden sm:block transition-all duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
           elementsEntered
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-4 pointer-events-none"
