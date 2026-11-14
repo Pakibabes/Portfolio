@@ -8,13 +8,17 @@ import DevStatus from "@/components/DevStatus";
 import ScrollCue from "@/components/ScrollCue";
 import MagneticButton from "@/components/MagneticButton";
 
-function subscribeIntro(callback: () => void) {
+function subscribeHero(callback: () => void) {
   window.addEventListener("singularity:breached", callback);
-  window.addEventListener("singularity:elements-enter", callback);
+  window.addEventListener("entrance:nav", callback);
+  window.addEventListener("entrance:hero", callback);
+  window.addEventListener("entrance:bottom", callback);
   window.addEventListener("storage", callback);
   return () => {
     window.removeEventListener("singularity:breached", callback);
-    window.removeEventListener("singularity:elements-enter", callback);
+    window.removeEventListener("entrance:nav", callback);
+    window.removeEventListener("entrance:hero", callback);
+    window.removeEventListener("entrance:bottom", callback);
     window.removeEventListener("storage", callback);
   };
 }
@@ -30,10 +34,32 @@ function getIntroSnapshot() {
   }
 }
 
-function getElementsSnapshot() {
+function getNavSnapshot() {
   try {
     return (
-      document.documentElement.classList.contains("hero-elements-entered") ||
+      document.documentElement.classList.contains("entrance-nav") ||
+      sessionStorage.getItem("hero_elements_entered") === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getHeroCardSnapshot() {
+  try {
+    return (
+      document.documentElement.classList.contains("entrance-hero") ||
+      sessionStorage.getItem("hero_elements_entered") === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getBottomSnapshot() {
+  try {
+    return (
+      document.documentElement.classList.contains("entrance-bottom") ||
       sessionStorage.getItem("hero_elements_entered") === "true"
     );
   } catch {
@@ -47,49 +73,90 @@ function getServerSnapshot() {
 
 export default function Hero() {
   const introBreached = useSyncExternalStore(
-    subscribeIntro,
+    subscribeHero,
     getIntroSnapshot,
     getServerSnapshot,
   );
 
-  const elementsEntered = useSyncExternalStore(
-    subscribeIntro,
-    getElementsSnapshot,
+  const navEntered = useSyncExternalStore(
+    subscribeHero,
+    getNavSnapshot,
     getServerSnapshot,
   );
 
-  // 3-5s solo Black Hole timer + double-click / double-tap to enter immediately
-  useEffect(() => {
-    if (!introBreached || elementsEntered) return;
+  const heroCardEntered = useSyncExternalStore(
+    subscribeHero,
+    getHeroCardSnapshot,
+    getServerSnapshot,
+  );
 
-    const triggerEnter = () => {
+  const bottomEntered = useSyncExternalStore(
+    subscribeHero,
+    getBottomSnapshot,
+    getServerSnapshot,
+  );
+
+  // Cascading sequential entrance (Top navbar -> Hero card -> Bottom elements)
+  useEffect(() => {
+    if (!introBreached || bottomEntered) return;
+
+    let stage2Timer: ReturnType<typeof setTimeout>;
+    let stage3Timer: ReturnType<typeof setTimeout>;
+    let isCancelled = false;
+
+    const startEntranceSequence = () => {
+      if (isCancelled) return;
+
+      // Stage 1: Top Navigation Bar slides down first
       try {
-        sessionStorage.setItem("hero_elements_entered", "true");
-        document.documentElement.classList.add("hero-elements-entered");
-        window.dispatchEvent(new CustomEvent("singularity:elements-enter"));
+        document.documentElement.classList.add("entrance-nav");
+        window.dispatchEvent(new CustomEvent("entrance:nav"));
       } catch {}
+
+      // Stage 2: 400ms later - Hero presentation card glides in
+      stage2Timer = setTimeout(() => {
+        if (isCancelled) return;
+        try {
+          document.documentElement.classList.add("entrance-hero");
+          window.dispatchEvent(new CustomEvent("entrance:hero"));
+        } catch {}
+      }, 400);
+
+      // Stage 3: 800ms later - Bottom elements (HUD, scroll cue, hints) slide up
+      stage3Timer = setTimeout(() => {
+        if (isCancelled) return;
+        try {
+          document.documentElement.classList.add("entrance-bottom");
+          document.documentElement.classList.add("hero-elements-entered");
+          sessionStorage.setItem("hero_elements_entered", "true");
+          window.dispatchEvent(new CustomEvent("entrance:bottom"));
+        } catch {}
+      }, 800);
     };
 
-    // Auto-slide in after 2.5 seconds (within 2-3 seconds range)
-    const timer = setTimeout(triggerEnter, 2500);
+    // Auto-slide in after 2.5 seconds solo Black Hole showcase
+    const stage1Timer = setTimeout(startEntranceSequence, 2500);
 
-    // Double-click or double-tap to fast-forward into the portfolio
+    // Double-click or double-tap to fast-forward immediately
     let lastTapTime = 0;
     const handlePointerDown = () => {
       const now = Date.now();
       if (now - lastTapTime < 450) {
-        triggerEnter();
+        clearTimeout(stage1Timer);
+        startEntranceSequence();
       }
       lastTapTime = now;
     };
 
     const handleDblClick = () => {
-      triggerEnter();
+      clearTimeout(stage1Timer);
+      startEntranceSequence();
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
-        triggerEnter();
+        clearTimeout(stage1Timer);
+        startEntranceSequence();
       }
     };
 
@@ -98,24 +165,27 @@ export default function Hero() {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      clearTimeout(timer);
+      isCancelled = true;
+      clearTimeout(stage1Timer);
+      clearTimeout(stage2Timer);
+      clearTimeout(stage3Timer);
       window.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("dblclick", handleDblClick);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [introBreached, elementsEntered]);
+  }, [introBreached, bottomEntered]);
 
   return (
     <section
       id="hero"
       className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center gap-10 px-4 pt-20 pb-16 sm:px-6 sm:pt-24 sm:pb-20 md:flex-row md:items-center md:justify-between md:gap-8 md:px-8 md:py-0 lg:px-12 xl:px-16 2xl:px-20 max-w-[1600px] mx-auto"
     >
-      {/* Left Column: Expansive Hero Content Card (Stage 2: Slides in after navbar) */}
+      {/* Left Column: Expansive Hero Content Card (Stage 2: Slides in 400ms after navbar) */}
       <div
-        className={`relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0 transition-all duration-[950ms] delay-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          elementsEntered
+        className={`relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0 transition-all duration-750 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          heroCardEntered
             ? "opacity-100 translate-x-0 pointer-events-auto"
-            : "opacity-0 -translate-x-10 pointer-events-none"
+            : "opacity-0 -translate-x-12 pointer-events-none"
         }`}
       >
         <DevStatus />
@@ -139,12 +209,12 @@ export default function Hero() {
           text={[profile.bio]}
           className="w-full max-w-2xl lg:max-w-3xl min-h-[4.5rem] sm:min-h-[5rem] md:min-h-[5.5rem] text-sm sm:text-base md:text-lg leading-relaxed text-muted"
           typingSpeed={38}
-          initialDelay={260}
+          initialDelay={180}
           pauseDuration={2200}
           showCursor
           cursorCharacter="_"
           loop={false}
-          start={elementsEntered}
+          start={heroCardEntered}
         />
 
         <div className="flex w-full sm:w-auto items-center gap-3 sm:gap-4 pt-2 font-mono text-xs sm:text-sm">
@@ -180,8 +250,8 @@ export default function Hero() {
         <BlackHole />
       </div>
 
-      {/* Solo Black Hole phase indicator (Fades out when elements slide in) */}
-      {introBreached && !elementsEntered && (
+      {/* Solo Black Hole phase indicator (Fades out when Stage 1 navbar starts) */}
+      {introBreached && !navEntered && (
         <div
           aria-live="polite"
           className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 rounded-full border border-white/10 bg-void/80 px-4 py-1.5 font-mono text-[10px] tracking-[0.2em] text-muted backdrop-blur-md animate-pulse"
@@ -193,10 +263,10 @@ export default function Hero() {
         </div>
       )}
 
-      {/* Stage 3: Scroll cue and bottom elements fade in */}
+      {/* Stage 3: Scroll cue and bottom elements fade in 800ms after navbar */}
       <div
-        className={`hidden md:flex transition-all duration-800 delay-[380ms] ease-out ${
-          elementsEntered ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-3 pointer-events-none"
+        className={`hidden md:flex transition-all duration-600 ease-out ${
+          bottomEntered ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-3 pointer-events-none"
         }`}
       >
         <ScrollCue />

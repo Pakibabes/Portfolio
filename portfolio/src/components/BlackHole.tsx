@@ -23,10 +23,10 @@ function getReducedMotion() {
 }
 
 function subscribeElements(onChange: () => void) {
-  window.addEventListener("singularity:elements-enter", onChange);
+  window.addEventListener("entrance:bottom", onChange);
   window.addEventListener("storage", onChange);
   return () => {
-    window.removeEventListener("singularity:elements-enter", onChange);
+    window.removeEventListener("entrance:bottom", onChange);
     window.removeEventListener("storage", onChange);
   };
 }
@@ -34,7 +34,7 @@ function subscribeElements(onChange: () => void) {
 function getElementsSnapshot() {
   try {
     return (
-      document.documentElement.classList.contains("hero-elements-entered") ||
+      document.documentElement.classList.contains("entrance-bottom") ||
       sessionStorage.getItem("hero_elements_entered") === "true"
     );
   } catch {
@@ -102,7 +102,7 @@ export default function BlackHole() {
 
       {hintVisible && (
         <div
-          className={`pointer-events-none absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap transition-opacity duration-800 delay-[380ms] ${
+          className={`pointer-events-none absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap transition-opacity duration-600 ${
             elementsEntered ? "opacity-100" : "opacity-0"
           }`}
         >

@@ -4,10 +4,10 @@ import { useState, useEffect, useSyncExternalStore } from "react";
 import { profile } from "@/data/portfolio";
 
 function subscribeHUD(callback: () => void) {
-  window.addEventListener("singularity:elements-enter", callback);
+  window.addEventListener("entrance:bottom", callback);
   window.addEventListener("storage", callback);
   return () => {
-    window.removeEventListener("singularity:elements-enter", callback);
+    window.removeEventListener("entrance:bottom", callback);
     window.removeEventListener("storage", callback);
   };
 }
@@ -15,7 +15,7 @@ function subscribeHUD(callback: () => void) {
 function getHUDSnapshot() {
   try {
     return (
-      document.documentElement.classList.contains("hero-elements-entered") ||
+      document.documentElement.classList.contains("entrance-bottom") ||
       sessionStorage.getItem("hero_elements_entered") === "true"
     );
   } catch {
@@ -28,7 +28,7 @@ function getServerSnapshot() {
 }
 
 export default function TelemetryHUD() {
-  const elementsEntered = useSyncExternalStore(
+  const bottomEntered = useSyncExternalStore(
     subscribeHUD,
     getHUDSnapshot,
     getServerSnapshot,
@@ -48,8 +48,8 @@ export default function TelemetryHUD() {
     <>
       {/* Floating HUD Trigger (Stage 3: Slides up with bottom elements) */}
       <div
-        className={`fixed bottom-5 right-5 z-40 hidden sm:block transition-all duration-800 delay-[380ms] ease-out ${
-          elementsEntered
+        className={`fixed bottom-5 right-5 z-40 hidden sm:block transition-all duration-600 ease-out ${
+          bottomEntered
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-4 pointer-events-none"
         }`}

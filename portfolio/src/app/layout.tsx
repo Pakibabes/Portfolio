@@ -57,6 +57,9 @@ export default function RootLayout({
                   document.documentElement.classList.add('intro-breached');
                 }
                 if (sessionStorage.getItem('hero_elements_entered') === 'true') {
+                  document.documentElement.classList.add('entrance-nav');
+                  document.documentElement.classList.add('entrance-hero');
+                  document.documentElement.classList.add('entrance-bottom');
                   document.documentElement.classList.add('hero-elements-entered');
                 }
               } catch (e) {}

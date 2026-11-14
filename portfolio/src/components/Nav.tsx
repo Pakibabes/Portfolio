@@ -7,10 +7,10 @@ import { navLinks, profile } from "@/data/portfolio";
 const sectionIds = ["hero", ...navLinks.map((l) => l.href.slice(1))];
 
 function subscribeNav(callback: () => void) {
-  window.addEventListener("singularity:elements-enter", callback);
+  window.addEventListener("entrance:nav", callback);
   window.addEventListener("storage", callback);
   return () => {
-    window.removeEventListener("singularity:elements-enter", callback);
+    window.removeEventListener("entrance:nav", callback);
     window.removeEventListener("storage", callback);
   };
 }
@@ -18,7 +18,7 @@ function subscribeNav(callback: () => void) {
 function getNavSnapshot() {
   try {
     return (
-      document.documentElement.classList.contains("hero-elements-entered") ||
+      document.documentElement.classList.contains("entrance-nav") ||
       sessionStorage.getItem("hero_elements_entered") === "true"
     );
   } catch {
@@ -31,7 +31,7 @@ function getServerSnapshot() {
 }
 
 export default function Nav() {
-  const elementsEntered = useSyncExternalStore(
+  const navEntered = useSyncExternalStore(
     subscribeNav,
     getNavSnapshot,
     getServerSnapshot,
@@ -93,8 +93,8 @@ export default function Nav() {
       {/* ================================================================= */}
       <header
         aria-label="Top Navigation"
-        className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-panel-line bg-void/80 px-4 py-3 backdrop-blur-md transition-all duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] sm:px-6 sm:py-4 md:px-12 ${
-          !elementsEntered || scrolledPastHero
+        className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-panel-line bg-void/80 px-4 py-3 backdrop-blur-md transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] sm:px-6 sm:py-4 md:px-12 ${
+          !navEntered || scrolledPastHero
             ? "-translate-y-full opacity-0 pointer-events-none"
             : "translate-y-0 opacity-100 pointer-events-auto"
         }`}
