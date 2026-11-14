@@ -172,16 +172,6 @@ export default function Nav() {
                 </svg>
               )}
             </button>
-
-            {/* Resume CTA */}
-            <a
-              href={profile.resumeHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden rounded-full border border-panel-line px-4 py-1.5 font-mono text-xs text-text transition-colors hover:border-cyan hover:text-cyan md:inline-flex"
-            >
-              Resume ↗
-            </a>
           </div>
         </div>
 
