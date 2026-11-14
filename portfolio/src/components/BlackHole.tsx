@@ -102,7 +102,7 @@ export default function BlackHole() {
 
       {hintVisible && (
         <div
-          className={`pointer-events-none absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap transition-opacity duration-700 ${
+          className={`pointer-events-none absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap transition-opacity duration-800 delay-[380ms] ${
             elementsEntered ? "opacity-100" : "opacity-0"
           }`}
         >

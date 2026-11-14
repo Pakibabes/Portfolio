@@ -110,12 +110,12 @@ export default function Hero() {
       id="hero"
       className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center gap-10 px-4 pt-20 pb-16 sm:px-6 sm:pt-24 sm:pb-20 md:flex-row md:items-center md:justify-between md:gap-8 md:px-8 md:py-0 lg:px-12 xl:px-16 2xl:px-20 max-w-[1600px] mx-auto"
     >
-      {/* Left Column: Expansive Hero Content Card (Slides in smoothly 2.5s after the Black Hole appears) */}
+      {/* Left Column: Expansive Hero Content Card (Stage 2: Slides in after navbar) */}
       <div
-        className={`relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0 transition-all duration-[1300ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
+        className={`relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0 transition-all duration-[950ms] delay-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
           elementsEntered
             ? "opacity-100 translate-x-0 pointer-events-auto"
-            : "opacity-0 -translate-x-12 pointer-events-none"
+            : "opacity-0 -translate-x-10 pointer-events-none"
         }`}
       >
         <DevStatus />
@@ -139,6 +139,7 @@ export default function Hero() {
           text={[profile.bio]}
           className="w-full max-w-2xl lg:max-w-3xl min-h-[4.5rem] sm:min-h-[5rem] md:min-h-[5.5rem] text-sm sm:text-base md:text-lg leading-relaxed text-muted"
           typingSpeed={38}
+          initialDelay={260}
           pauseDuration={2200}
           showCursor
           cursorCharacter="_"
@@ -192,9 +193,10 @@ export default function Hero() {
         </div>
       )}
 
+      {/* Stage 3: Scroll cue and bottom elements fade in */}
       <div
-        className={`hidden md:flex transition-opacity duration-700 ease-out ${
-          elementsEntered ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        className={`hidden md:flex transition-all duration-800 delay-[380ms] ease-out ${
+          elementsEntered ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-3 pointer-events-none"
         }`}
       >
         <ScrollCue />
