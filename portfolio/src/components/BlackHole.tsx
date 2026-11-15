@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useSyncExternalStore, useState } from "react";
+import React, { Component, type ReactNode, useSyncExternalStore, useState } from "react";
 
 const BlackHole3D = dynamic(() => import("./BlackHole3D"), {
   ssr: false,
@@ -12,14 +12,50 @@ const BlackHole3D = dynamic(() => import("./BlackHole3D"), {
   ),
 });
 
-function subscribeReducedMotion(onChange: () => void) {
-  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
+function hasWebGLSupport(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl2") ||
+        canvas.getContext("webgl") ||
+        canvas.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
 }
 
-function getReducedMotion() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+interface ErrorBoundaryProps {
+  fallback: ReactNode;
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class BlackHoleErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: unknown) {
+    console.warn("3D Black Hole encountered an error, falling back to static visual:", error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
 }
 
 function subscribeElements(onChange: () => void) {
@@ -71,11 +107,7 @@ function StaticBlackHole() {
 }
 
 export default function BlackHole() {
-  const reducedMotion = useSyncExternalStore(
-    subscribeReducedMotion,
-    getReducedMotion,
-    () => false,
-  );
+  const [webglSupported] = useState(hasWebGLSupport);
   const elementsEntered = useSyncExternalStore(
     subscribeElements,
     getElementsSnapshot,
@@ -87,30 +119,32 @@ export default function BlackHole() {
     if (hintVisible) setHintVisible(false);
   };
 
-  if (reducedMotion) {
+  if (!webglSupported) {
     return <StaticBlackHole />;
   }
 
   return (
-    <div
-      className="absolute inset-0 cursor-grab active:cursor-grabbing"
-      onPointerDown={dismissHint}
-      role="img"
-      aria-label="Interactive 3D black hole — drag to spin"
-    >
-      <BlackHole3D autoRotate={hintVisible} />
+    <BlackHoleErrorBoundary fallback={<StaticBlackHole />}>
+      <div
+        className="absolute inset-0 cursor-grab active:cursor-grabbing"
+        onPointerDown={dismissHint}
+        role="img"
+        aria-label="Interactive 3D black hole — drag to spin"
+      >
+        <BlackHole3D autoRotate={hintVisible} />
 
-      {hintVisible && (
-        <div
-          className={`pointer-events-none absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap transition-opacity duration-600 ${
-            elementsEntered ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <span className="rounded-full border border-panel-line/60 bg-void/80 px-2.5 py-1 font-mono text-[9px] sm:text-[10px] tracking-[0.2em] text-muted backdrop-blur-sm">
-            DRAG TO SPIN
-          </span>
-        </div>
-      )}
-    </div>
+        {hintVisible && (
+          <div
+            className={`pointer-events-none absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap transition-opacity duration-600 ${
+              elementsEntered ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <span className="rounded-full border border-panel-line/60 bg-void/80 px-2.5 py-1 font-mono text-[9px] sm:text-[10px] tracking-[0.2em] text-muted backdrop-blur-sm">
+              DRAG TO SPIN
+            </span>
+          </div>
+        )}
+      </div>
+    </BlackHoleErrorBoundary>
   );
 }

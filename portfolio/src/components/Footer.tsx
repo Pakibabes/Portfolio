@@ -1,20 +1,12 @@
 "use client";
 
+import { replayCinematicIntro } from "@/lib/replay";
+
 export default function Footer() {
   const triggerCommandPalette = () => {
     window.dispatchEvent(
       new KeyboardEvent("keydown", { key: "k", ctrlKey: true }),
     );
-  };
-
-  const replayIntro = () => {
-    try {
-      sessionStorage.removeItem("singularity_breached");
-      document.documentElement.classList.remove("intro-breached");
-    } catch {
-      // sessionStorage unavailable
-    }
-    window.location.reload();
   };
 
   return (
@@ -43,7 +35,7 @@ export default function Footer() {
 
         <button
           type="button"
-          onClick={replayIntro}
+          onClick={replayCinematicIntro}
           className="inline-flex items-center gap-1.5 rounded-full border border-panel-line/70 bg-panel/50 px-3 py-1 text-[10px] tracking-wider text-muted transition-colors hover:border-violet/50 hover:text-violet active:bg-panel cursor-pointer"
           aria-label="Replay cinematic singularity intro"
         >

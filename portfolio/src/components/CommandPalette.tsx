@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { navLinks, profile } from "@/data/portfolio";
+import { replayCinematicIntro } from "@/lib/replay";
 
 const commands = [
   ...navLinks.map((link) => ({
@@ -64,11 +65,8 @@ export default function CommandPalette() {
         return;
       }
       if ("action" in cmd && cmd.action === "replay-intro") {
-        try {
-          sessionStorage.removeItem("singularity_breached");
-          document.documentElement.classList.remove("intro-breached");
-        } catch {}
-        window.location.reload();
+        close();
+        replayCinematicIntro();
         return;
       }
       if ("href" in cmd && cmd.href) {
