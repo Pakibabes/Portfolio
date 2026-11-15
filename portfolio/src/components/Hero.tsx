@@ -118,6 +118,7 @@ export default function Hero() {
   useEffect(() => {
     if (!introBreached || bottomEntered) return;
 
+    let stage1NavTimer: ReturnType<typeof setTimeout>;
     let stage2Timer: ReturnType<typeof setTimeout>;
     let stage3Timer: ReturnType<typeof setTimeout>;
     let isCancelled = false;
@@ -125,13 +126,16 @@ export default function Hero() {
     const startEntranceSequence = () => {
       if (isCancelled) return;
 
-      // Stage 1: Top Navigation Bar slides down first
-      try {
-        document.documentElement.classList.add("entrance-nav");
-        window.dispatchEvent(new CustomEvent("entrance:nav"));
-      } catch {}
+      // Stage 1: 200ms delay - Top Navigation Bar slides down
+      stage1NavTimer = setTimeout(() => {
+        if (isCancelled) return;
+        try {
+          document.documentElement.classList.add("entrance-nav");
+          window.dispatchEvent(new CustomEvent("entrance:nav"));
+        } catch {}
+      }, 200);
 
-      // Stage 2: 700ms later - Pan back to hero on mobile + Hero presentation card glides in
+      // Stage 2: 700ms after Stage 1 (900ms total) - Pan back to hero on mobile + Hero presentation card glides in
       stage2Timer = setTimeout(() => {
         if (isCancelled) return;
         try {
@@ -141,9 +145,9 @@ export default function Hero() {
           document.documentElement.classList.add("entrance-hero");
           window.dispatchEvent(new CustomEvent("entrance:hero"));
         } catch {}
-      }, 700);
+      }, 900);
 
-      // Stage 3: 1000ms later - Bottom elements (HUD, scroll cue, hints) slide up
+      // Stage 3: 1000ms after Stage 1 (1200ms total) - Bottom elements (HUD, scroll cue, hints) slide up
       stage3Timer = setTimeout(() => {
         if (isCancelled) return;
         try {
@@ -152,7 +156,7 @@ export default function Hero() {
           sessionStorage.setItem("hero_elements_entered", "true");
           window.dispatchEvent(new CustomEvent("entrance:bottom"));
         } catch {}
-      }, 1000);
+      }, 1200);
     };
 
     // Auto-slide in after 2.5 seconds solo Black Hole showcase
@@ -164,6 +168,9 @@ export default function Hero() {
       const now = Date.now();
       if (now - lastTapTime < 450) {
         clearTimeout(stage1Timer);
+        clearTimeout(stage1NavTimer);
+        clearTimeout(stage2Timer);
+        clearTimeout(stage3Timer);
         startEntranceSequence();
       }
       lastTapTime = now;
@@ -171,12 +178,18 @@ export default function Hero() {
 
     const handleDblClick = () => {
       clearTimeout(stage1Timer);
+      clearTimeout(stage1NavTimer);
+      clearTimeout(stage2Timer);
+      clearTimeout(stage3Timer);
       startEntranceSequence();
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
         clearTimeout(stage1Timer);
+        clearTimeout(stage1NavTimer);
+        clearTimeout(stage2Timer);
+        clearTimeout(stage3Timer);
         startEntranceSequence();
       }
     };
@@ -188,6 +201,7 @@ export default function Hero() {
     return () => {
       isCancelled = true;
       clearTimeout(stage1Timer);
+      clearTimeout(stage1NavTimer);
       clearTimeout(stage2Timer);
       clearTimeout(stage3Timer);
       window.removeEventListener("pointerdown", handlePointerDown);
