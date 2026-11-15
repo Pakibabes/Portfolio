@@ -96,6 +96,24 @@ export default function Hero() {
     getServerSnapshot,
   );
 
+  // On mobile: smoothly pan down to center the Black Hole when the explosion ends
+  useEffect(() => {
+    if (!introBreached || bottomEntered) return;
+
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      const panDownTimer = setTimeout(() => {
+        const el = document.getElementById("hero-black-hole");
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const targetY = window.scrollY + rect.top - (window.innerHeight - rect.height) / 2;
+          window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
+        }
+      }, 70);
+
+      return () => clearTimeout(panDownTimer);
+    }
+  }, [introBreached, bottomEntered]);
+
   // Cascading sequential entrance (Top navbar -> Hero card -> Bottom elements)
   useEffect(() => {
     if (!introBreached || bottomEntered) return;
@@ -113,16 +131,19 @@ export default function Hero() {
         window.dispatchEvent(new CustomEvent("entrance:nav"));
       } catch {}
 
-      // Stage 2: 400ms later - Hero presentation card glides in
+      // Stage 2: 700ms later - Pan back to hero on mobile + Hero presentation card glides in
       stage2Timer = setTimeout(() => {
         if (isCancelled) return;
         try {
+          if (typeof window !== "undefined" && window.innerWidth < 768) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
           document.documentElement.classList.add("entrance-hero");
           window.dispatchEvent(new CustomEvent("entrance:hero"));
         } catch {}
-      }, 400);
+      }, 700);
 
-      // Stage 3: 800ms later - Bottom elements (HUD, scroll cue, hints) slide up
+      // Stage 3: 1000ms later - Bottom elements (HUD, scroll cue, hints) slide up
       stage3Timer = setTimeout(() => {
         if (isCancelled) return;
         try {
@@ -131,7 +152,7 @@ export default function Hero() {
           sessionStorage.setItem("hero_elements_entered", "true");
           window.dispatchEvent(new CustomEvent("entrance:bottom"));
         } catch {}
-      }, 800);
+      }, 1000);
     };
 
     // Auto-slide in after 2.5 seconds solo Black Hole showcase
@@ -241,6 +262,7 @@ export default function Hero() {
 
       {/* Right Column: 3D Black Hole at the Right Side (Revealed FIRST upon singularity breach) */}
       <div
+        id="hero-black-hole"
         className={`relative shrink-0 flex items-center justify-center h-[340px] w-full sm:h-[420px] md:h-[500px] md:w-[460px] lg:h-[580px] lg:w-[540px] xl:h-[660px] xl:w-[620px] 2xl:h-[720px] 2xl:w-[680px] transition-all duration-1000 ease-out ${
           introBreached
             ? "opacity-100 scale-100"
@@ -254,16 +276,17 @@ export default function Hero() {
       {introBreached && !navEntered && (
         <div
           aria-live="polite"
-          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 rounded-full border border-white/10 bg-void/80 px-4 py-1.5 font-mono text-[10px] tracking-[0.2em] text-muted backdrop-blur-md animate-pulse"
+          className="pointer-events-none fixed bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 rounded-full border border-white/10 bg-void/80 px-4 py-1.5 font-mono text-[10px] tracking-[0.2em] text-muted backdrop-blur-md animate-pulse"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-cyan" />
-          <span>DOUBLE-CLICK TO ENTER</span>
+          <span className="hidden sm:inline">DOUBLE-CLICK TO ENTER</span>
+          <span className="sm:hidden">DOUBLE-TAP TO ENTER</span>
           <span className="text-white/20">•</span>
           <span className="text-[9px] text-muted/60">SPACE / ENTER</span>
         </div>
       )}
 
-      {/* Stage 3: Scroll cue and bottom elements fade in 800ms after navbar */}
+      {/* Stage 3: Scroll cue and bottom elements fade in 1000ms after navbar */}
       <div
         className={`hidden md:flex transition-all duration-600 ease-out ${
           bottomEntered ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-3 pointer-events-none"
