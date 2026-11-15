@@ -10,10 +10,7 @@ export default function CosmicCursor() {
   useEffect(() => {
     // Only enable on desktop with fine pointer
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (!hasFinePointer || prefersReducedMotion) return;
+    if (!hasFinePointer) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       posRef.current.targetX = e.clientX;

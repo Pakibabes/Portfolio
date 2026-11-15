@@ -19,10 +19,6 @@ export default function Starfield() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
     let stars: Star[] = [];
     let width = 0;
     let height = 0;
@@ -39,16 +35,6 @@ export default function Starfield() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-
-    const drawStatic = () => {
-      ctx.clearRect(0, 0, width, height);
-      for (const star of stars) {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(236, 233, 246, 0.5)";
-        ctx.fill();
-      }
-    };
 
     const drawAnimated = () => {
       ctx.clearRect(0, 0, width, height);
@@ -100,11 +86,7 @@ export default function Starfield() {
     resize();
     window.addEventListener("resize", resize);
 
-    if (prefersReducedMotion) {
-      drawStatic();
-    } else {
-      raf = requestAnimationFrame(drawAnimated);
-    }
+    raf = requestAnimationFrame(drawAnimated);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);

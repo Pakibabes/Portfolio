@@ -116,14 +116,6 @@ button * {
   animation: bh-pulse 6s ease-in-out infinite;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .bh-spin,
-  .bh-spin-reverse,
-  .bh-pulse {
-    animation: none;
-  }
-}
-
 .skill-card {
   position: relative;
   isolation: isolate;
@@ -272,12 +264,6 @@ button * {
   animation: marquee 40s linear infinite;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
-}
-
 .project-card {
   transition:
     transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -289,12 +275,6 @@ button * {
   transform: translateY(-4px);
   border-color: rgba(138, 124, 255, 0.75);
   box-shadow: 0 12px 40px -12px rgba(138, 124, 255, 0.25);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .project-card:hover {
-    transform: none;
-  }
 }
 
 .sr-only {
@@ -320,12 +300,6 @@ button * {
   transform: translateY(-2px);
   border-color: rgba(79, 214, 224, 0.35);
   box-shadow: 0 8px 24px -8px rgba(79, 214, 224, 0.15);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stat-card:hover {
-    transform: none;
-  }
 }
 
 /* Bento Grid & Spotlight Card Styles */
@@ -363,11 +337,4 @@ button * {
   transform: translateY(-4px);
   border-color: rgba(138, 124, 255, 0.45);
   box-shadow: 0 16px 40px -12px rgba(138, 124, 255, 0.2);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bento-card:hover,
-  .spotlight-card:hover {
-    transform: none;
-  }
 }

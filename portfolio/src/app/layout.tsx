@@ -36,8 +36,12 @@ export const metadata: Metadata = {
     locale: "en_US",
   },
   icons: {
-    icon: "/icons/logo.png",
+    icon: [
+      { url: "/icons/logo.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
     apple: "/icons/logo.png",
+    shortcut: "/icons/logo.png",
   },
 };
 
@@ -49,6 +53,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/icons/logo.png" type="image/png" sizes="any" />
+        <link rel="apple-touch-icon" href="/icons/logo.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

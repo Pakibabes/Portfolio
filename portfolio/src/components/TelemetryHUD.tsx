@@ -36,6 +36,20 @@ export default function TelemetryHUD() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    if (isOpen) {
+      document.documentElement.classList.add("syshud-modal-open");
+      window.dispatchEvent(new CustomEvent("syshud:change", { detail: true }));
+    } else {
+      document.documentElement.classList.remove("syshud-modal-open");
+      window.dispatchEvent(new CustomEvent("syshud:change", { detail: false }));
+    }
+    return () => {
+      document.documentElement.classList.remove("syshud-modal-open");
+      window.dispatchEvent(new CustomEvent("syshud:change", { detail: false }));
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") setIsOpen(false);
