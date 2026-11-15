@@ -118,7 +118,6 @@ export default function Hero() {
   useEffect(() => {
     if (!introBreached || bottomEntered) return;
 
-    let stage1NavTimer: ReturnType<typeof setTimeout>;
     let stage2Timer: ReturnType<typeof setTimeout>;
     let stage3Timer: ReturnType<typeof setTimeout>;
     let isCancelled = false;
@@ -126,16 +125,13 @@ export default function Hero() {
     const startEntranceSequence = () => {
       if (isCancelled) return;
 
-      // Stage 1: 200ms delay - Top Navigation Bar slides down
-      stage1NavTimer = setTimeout(() => {
-        if (isCancelled) return;
-        try {
-          document.documentElement.classList.add("entrance-nav");
-          window.dispatchEvent(new CustomEvent("entrance:nav"));
-        } catch {}
-      }, 200);
+      // Stage 1: Top Navigation Bar slides down
+      try {
+        document.documentElement.classList.add("entrance-nav");
+        window.dispatchEvent(new CustomEvent("entrance:nav"));
+      } catch {}
 
-      // Stage 2: 700ms after Stage 1 (900ms total) - Pan back to hero on mobile + Hero presentation card glides in
+      // Stage 2: 1.0s (1000ms) interval after Top Navbar - Pan back to hero on mobile + Hero presentation card glides in
       stage2Timer = setTimeout(() => {
         if (isCancelled) return;
         try {
@@ -145,9 +141,9 @@ export default function Hero() {
           document.documentElement.classList.add("entrance-hero");
           window.dispatchEvent(new CustomEvent("entrance:hero"));
         } catch {}
-      }, 900);
+      }, 1000);
 
-      // Stage 3: 1000ms after Stage 1 (1200ms total) - Bottom elements (HUD, scroll cue, hints) slide up
+      // Stage 3: 800ms after Hero Card (1800ms total) - Bottom elements (HUD, scroll cue, hints) slide up
       stage3Timer = setTimeout(() => {
         if (isCancelled) return;
         try {
@@ -156,11 +152,11 @@ export default function Hero() {
           sessionStorage.setItem("hero_elements_entered", "true");
           window.dispatchEvent(new CustomEvent("entrance:bottom"));
         } catch {}
-      }, 1200);
+      }, 1800);
     };
 
-    // Auto-slide in after 2.5 seconds solo Black Hole showcase
-    const stage1Timer = setTimeout(startEntranceSequence, 2500);
+    // Auto-slide in 1.5 seconds after solo Black Hole showcase
+    const stage1Timer = setTimeout(startEntranceSequence, 1500);
 
     // Double-click or double-tap to fast-forward immediately
     let lastTapTime = 0;
@@ -168,7 +164,6 @@ export default function Hero() {
       const now = Date.now();
       if (now - lastTapTime < 450) {
         clearTimeout(stage1Timer);
-        clearTimeout(stage1NavTimer);
         clearTimeout(stage2Timer);
         clearTimeout(stage3Timer);
         startEntranceSequence();
@@ -178,7 +173,6 @@ export default function Hero() {
 
     const handleDblClick = () => {
       clearTimeout(stage1Timer);
-      clearTimeout(stage1NavTimer);
       clearTimeout(stage2Timer);
       clearTimeout(stage3Timer);
       startEntranceSequence();
@@ -187,7 +181,6 @@ export default function Hero() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
         clearTimeout(stage1Timer);
-        clearTimeout(stage1NavTimer);
         clearTimeout(stage2Timer);
         clearTimeout(stage3Timer);
         startEntranceSequence();
@@ -201,7 +194,6 @@ export default function Hero() {
     return () => {
       isCancelled = true;
       clearTimeout(stage1Timer);
-      clearTimeout(stage1NavTimer);
       clearTimeout(stage2Timer);
       clearTimeout(stage3Timer);
       window.removeEventListener("pointerdown", handlePointerDown);
@@ -215,9 +207,9 @@ export default function Hero() {
       id="hero"
       className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center gap-10 px-4 pt-20 pb-16 sm:px-6 sm:pt-24 sm:pb-20 md:flex-row md:items-center md:justify-between md:gap-8 md:px-8 md:py-0 lg:px-12 xl:px-16 2xl:px-20 max-w-[1600px] mx-auto"
     >
-      {/* Left Column: Expansive Hero Content Card (Stage 2: Slides in 400ms after navbar) */}
+      {/* Left Column: Expansive Hero Content Card (Stage 2: Glides in gracefully) */}
       <div
-        className={`relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0 transition-all duration-750 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`relative z-10 flex flex-1 flex-col items-start gap-5 sm:gap-6 text-left max-w-2xl lg:max-w-3xl xl:max-w-4xl min-w-0 transition-all duration-[1800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
           heroCardEntered
             ? "opacity-100 translate-x-0 pointer-events-auto"
             : "opacity-0 -translate-x-12 pointer-events-none"
@@ -244,7 +236,7 @@ export default function Hero() {
           text={[profile.bio]}
           className="w-full max-w-2xl lg:max-w-3xl min-h-[4.5rem] sm:min-h-[5rem] md:min-h-[5.5rem] text-sm sm:text-base md:text-lg leading-relaxed text-muted"
           typingSpeed={38}
-          initialDelay={180}
+          initialDelay={300}
           pauseDuration={2200}
           showCursor
           cursorCharacter="_"
